@@ -1,6 +1,7 @@
 # 3D-Tower-Defense
 3D Tower Defense Game for Android
 
+# About the Game
 Defend your base from enemy spheres. Place down towers in strategic positions, allowing for many different strategys to complete the level. Each level will have 20 rounds, each round becoming increasingly harder as the player progresses. 
 
 # Initial Game Characters
