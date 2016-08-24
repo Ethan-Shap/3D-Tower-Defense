@@ -16,7 +16,7 @@ Defend your base from enemy spheres. Place down towers in strategic positions, a
         Red: Isn't affected by fire towers
         Blue: Isn't affected by ice towers
         Grey: Reinforced, takes more damage than others
-        Black: 
+        Black: Boss, takes a lot of damage and cannot be slowed
 
 # Levels
     - Start with 100 credits
