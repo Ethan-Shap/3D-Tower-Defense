@@ -16,6 +16,8 @@ public class AdjustCamera : MonoBehaviour {
     [SerializeField]
     private float stopZoomingDist = 15f;
 
+    private Vector3 prevPos;
+
     // Use this for initialization
     void Start ()
     {
@@ -32,7 +34,10 @@ public class AdjustCamera : MonoBehaviour {
         } else if(Input.touchCount == 2)
         {
             Zoom();
-        } 
+        } else
+        {
+            prevPos = Vector3.zero;
+        }
 	}
 
     private void Zoom()
@@ -58,15 +63,14 @@ public class AdjustCamera : MonoBehaviour {
     
     private void Rotate()
     {
-        Vector3 curDist = Input.touches[0].position;
-        Vector3 prevPos = Input.touches[0].deltaPosition;
+        Vector3 curPos = Input.touches[0].position;
 
-        if(curDist != prevPos)
-        {
-            Debug.Log("hg");
-            Vector3 rotDir = (curDist - prevPos);
-            cameraParent.transform.Rotate(rotDir.y, rotDir.x, 0, Space.Self);
-        }
+        Vector3 rotDir = (curPos - prevPos);
+        rotDir.Set(rotDir.y, rotDir.x, 0);
+
+        cameraParent.transform.Rotate(rotDir * Time.deltaTime * rotSpeed, Space.Self);
+
+        prevPos = curPos;
     }
 }
 public static class ExtensionMethods
