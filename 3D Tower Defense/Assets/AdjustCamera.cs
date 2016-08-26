@@ -16,7 +16,7 @@ public class AdjustCamera : MonoBehaviour {
     [SerializeField]
     private float stopZoomingDist = 15f;
 
-    private Vector3 prevPos;
+    private Vector2 prevPos;
 
     // Use this for initialization
     void Start ()
@@ -34,10 +34,7 @@ public class AdjustCamera : MonoBehaviour {
         } else if(Input.touchCount == 2)
         {
             Zoom();
-        } else
-        {
-            prevPos = Vector3.zero;
-        }
+        } 
 	}
 
     private void Zoom()
@@ -63,15 +60,20 @@ public class AdjustCamera : MonoBehaviour {
     
     private void Rotate()
     {
-        Vector3 curPos = Input.touches[0].position;
+        // calculates the rotation based on which way the user moved 
+        Vector3 rotDir = (Input.GetTouch(0).position - prevPos) * -1;
 
-        Vector3 rotDir = (curPos - prevPos);
+        // Using touch to move, reverse the x and y
         rotDir.Set(rotDir.y, rotDir.x, 0);
 
-        cameraParent.transform.Rotate(rotDir * Time.deltaTime * rotSpeed, Space.Self);
+        // rotates the camera in a direction at a speed in local space
+        cameraParent.transform.Rotate(rotDir, Time.deltaTime * rotSpeed * expectedFPS, Space.Self);
 
-        prevPos = curPos;
+        // sets previous mouse position to first touch
+        prevPos = Input.GetTouch(0).position;
     }
+
+
 }
 public static class ExtensionMethods
 {
