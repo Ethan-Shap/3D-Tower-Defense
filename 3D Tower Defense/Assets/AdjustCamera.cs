@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.EventSystems;
-using System;
 
 public class AdjustCamera : MonoBehaviour {
 
@@ -9,23 +6,33 @@ public class AdjustCamera : MonoBehaviour {
     public float zoomSpeed = 0.25f;
     public float expectedFPS = 30f;
 
-    [SerializeField]
-    private Camera mainCamera;
+    public Transform cameraFocusPoint;
 
-    // Vars for Rotating Camera
-    private Vector2 previousMousePos;
-    private Vector3 rotDir;
+    [SerializeField]
+    private Transform cameraParent;
+    private Camera c;
 
     // Vars for zooming camera
     [SerializeField]
-    private float previousDist;
     private float stopZoomingDist = 15f;
+    private float prevDist = 0;
+    private float minDist = 8f;
+    private float maxDist = 14f;
+
+    private Vector2 prevPos;
+    private float minXRot = 3, maxXRot = 45;
 
     // Use this for initialization
     void Start ()
     {
-        if (!mainCamera)
-            throw new System.NullReferenceException("No main camera for camera adjuster");
+        if (!cameraParent)
+            throw new System.NullReferenceException("No main parent for camera adjuster to manipulate camera");
+
+        if (!cameraFocusPoint)
+            throw new System.NullReferenceException("No camera focus point");
+
+        c = cameraParent.GetComponentInChildren<Camera>();
+        c.transform.LookAt(cameraFocusPoint);
 	}
 	
 	// Update is called once per frame
@@ -33,50 +40,73 @@ public class AdjustCamera : MonoBehaviour {
     {
         if (Input.touchCount == 1)
         {
-            Rotate(Vector3.zero);
-            mainCamera.transform.rotation = Quaternion.Euler(new Vector3(mainCamera.transform.rotation.eulerAngles.x, mainCamera.transform.rotation.eulerAngles.y, 0f));
+            Rotate();
+            cameraParent.transform.eulerAngles = new Vector3(cameraParent.transform.eulerAngles.x, cameraParent.transform.eulerAngles.y, 0);
         } else if(Input.touchCount == 2)
         {
             Zoom();
-        } else
-        {
-            mainCamera.transform.rotation = Quaternion.Euler(new Vector3(mainCamera.transform.rotation.eulerAngles.x, mainCamera.transform.rotation.eulerAngles.y, 0f));
         }
 	}
 
     private void Zoom()
     {
-        // Calculate distance between touches 
+        //// Calculate distance between touches 
         float curDist = Vector3.SqrMagnitude(Input.touches[0].position - Input.touches[1].position);
 
         // Determine which way too zoom
-        Vector3 zoomDir = curDist > previousDist ? mainCamera.transform.forward : -mainCamera.transform.forward;
-        zoomDir = mainCamera.transform.InverseTransformDirection(zoomDir);
+        Vector3 zoomDir = curDist > prevDist ? c.transform.forward : -c.transform.forward;
+        zoomDir = c.transform.InverseTransformDirection(zoomDir);
 
-        float dst = Vector3.SqrMagnitude(mainCamera.transform.position - Vector3.zero);
+        // Move Camera in direction
+        c.transform.Translate(zoomDir * zoomSpeed * Time.deltaTime * expectedFPS);
 
-        if (dst > stopZoomingDist || zoomDir == -mainCamera.transform.forward)
-        {
-            // Move Camera in direction
-            mainCamera.transform.Translate(zoomDir * zoomSpeed * Time.deltaTime * expectedFPS);
-        }
+        // Clamp Camera Position
+        c.transform.position = c.transform.position.ClampMagnitude(cameraParent.transform.position, minDist, maxDist);
+        c.transform.LookAt(cameraParent);
 
-        previousDist = curDist;
+        prevDist = curDist;
     }
-    
-    private void Rotate(Vector3 rotateAround)
+
+    private void Rotate()
     {
         // calculates the rotation based on which way the user moved 
-        rotDir = (Input.GetTouch(0).position - previousMousePos) * -1;
+        Vector3 rotDir = (Input.GetTouch(0).position - prevPos) * -1;
 
-        // Flip the rotation axis on x and y
-        rotDir.Set(rotDir.y, rotDir.x, rotDir.z);
-        rotDir = mainCamera.transform.InverseTransformDirection(rotDir);
+        // Using touch to move, reverse the x and y
+        rotDir.Set(rotDir.y, rotDir.x, 0);
 
-        // rotates the camera about the desired point at an angle of rotation at rotation speed
-        mainCamera.transform.RotateAround(rotateAround, rotDir, rotSpeed * Time.deltaTime * expectedFPS);
+        // rotates the camera in a direction at a speed in local space
+        cameraParent.transform.Rotate(rotDir, Time.deltaTime * rotSpeed * expectedFPS, Space.Self);
+
+        float newXRot = Mathf.Clamp(cameraParent.transform.eulerAngles.x, minXRot, maxXRot);
+
+        cameraParent.transform.rotation = Quaternion.Euler(newXRot, cameraParent.transform.localEulerAngles.y, cameraParent.transform.localEulerAngles.z);
 
         // sets previous mouse position to first touch
-        previousMousePos = Input.GetTouch(0).position;
+        prevPos = Input.GetTouch(0).position;
+    }
+}
+public static class ExtensionMethods
+{
+    public static Vector3 Clamp(this Vector3 v, float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+    {
+        return new Vector3(Mathf.Clamp(v.x, minX, maxX), Mathf.Clamp(v.y, minY, maxY), Mathf.Clamp(v.z, minZ, maxZ));
+    }
+
+    public static Vector3 ClampMagnitude(this Vector3 v, Vector3 point, float minDist, float maxDist)
+    {
+        float dist = Vector3.Magnitude(v - point);
+        Vector3 dir = v - point; 
+        dir = dir.normalized;
+        if (dist <= minDist)
+        {
+            return (dir * minDist) + point;
+        } else if (dist >= maxDist)
+        {
+            return (dir * maxDist) + point;
+        } else
+        {
+            return v;
+        }
     }
 }
