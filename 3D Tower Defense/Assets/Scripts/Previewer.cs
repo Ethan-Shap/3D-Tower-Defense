@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
 public class Previewer : MonoBehaviour {
 
     public static Previewer instance;
@@ -8,9 +7,11 @@ public class Previewer : MonoBehaviour {
     public float touchDist = 10f;
     public float previewAlpha;
     public Camera mainCamera;
+    public GameObject exitPreviewButton;
+    public GameObject comfirmPurchaseButton;
 
     private bool previewing;
-    private GameObject currentTower;
+    private GameManager gameManager;
     private BuildManager buildManager;
 
     public bool Previewing
@@ -35,28 +36,60 @@ public class Previewer : MonoBehaviour {
     private void Start()
     {
         buildManager = BuildManager.instance;
+        gameManager = GameManager.instance;
     }
 
-	// Update is called once per frame
-	void Update ()
+    private void Update()
     {
-         if (Previewing && Input.touchCount > 0)
+        if (Previewing)
         {
-            Vector3 point = mainCamera.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, touchDist));
-            currentTower.transform.position = point;
+            exitPreviewButton.SetActive(true);
+            comfirmPurchaseButton.SetActive(true);
+            if (Input.touchCount == 1)
+            {
+                //Debug.Log(mainCamera.ScreenPointToRay(Input.GetTouch(0).position));
+                MovePreview(mainCamera.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y, touchDist)));
+            }
+        } else
+        {
+            exitPreviewButton.SetActive(false);
+            comfirmPurchaseButton.SetActive(false);
         }
+    }
+
+    public void ComfirmPlacement()
+    {
+        // Tell Shop to purchase tower, and activate tower place animation
+    }
+
+    public void ExitPreview()
+    {
+        Destroy(gameManager.selectedTower);
+        gameManager.selectedTower = null;
+        Previewing = false;
+    }
+
+    public void MovePreview(Vector3 pos)
+    {
+        if(Previewing && gameManager.selectedTower)
+        {
+            gameManager.selectedTower.transform.position = pos;
+        }
+            
     }
 
     public void PreviewTower(GameObject tower)
     {
-        if (currentTower != tower)
+        if (gameManager.selectedTower == null || gameManager.selectedTower.GetComponent<Tower>().title != tower.GetComponent<Tower>().title)
         {
-            currentTower = buildManager.BuildTower(tower);
-            MakeTowerTransparent(currentTower);
-        } else if (currentTower == tower)
+            Destroy(gameManager.selectedTower);
+            gameManager.selectedTower = buildManager.BuildTower(tower);
+            MakeTowerTransparent(gameManager.selectedTower);
+        } else if (gameManager.selectedTower.GetComponent<Tower>().title == tower.GetComponent<Tower>().title)
         {
-            previewing = false;
-            currentTower = null;
+            Destroy(gameManager.selectedTower);
+            Previewing = false;
+            gameManager.selectedTower = null;
         }
 
         Previewing = true;

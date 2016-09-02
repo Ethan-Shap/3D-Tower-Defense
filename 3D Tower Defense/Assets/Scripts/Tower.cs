@@ -4,7 +4,9 @@ using System.Collections;
 public class Tower : MonoBehaviour {
 
     // Tower Attributes
-
+    public string title;
+    public int damage;
+    public float range;
 
 	// Use this for initialization
 	void Start () {

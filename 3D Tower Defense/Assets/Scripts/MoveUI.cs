@@ -3,25 +3,26 @@ using System.Collections;
 
 public class MoveUI : MonoBehaviour {
 
-    public float moveSpeed;
-    public float scrnHightPercent;
+    public float openCloseSpeed;
+    public float scrnHeightPercent;
     public float epsilon;
 
     private Vector3 pos1;
     private Vector3 pos2;
-    private Vector3 movDist;
     private bool isOpen = true;
 	
     public void Move()
     {
-        movDist.Set(0, Screen.height * scrnHightPercent, 0);
-        pos1 = transform.position + movDist;
-        pos2 = transform.position - movDist;
+        Vector3 moveDist = new Vector3(0, Screen.height * scrnHeightPercent, 0);
+        pos1 = transform.position + moveDist;
+        pos2 = transform.position - moveDist;
 
-        StartCoroutine(OpenClose());
+        float moveSpeed = Vector3.Distance(pos1, pos2) / openCloseSpeed * Time.deltaTime;
+
+        StartCoroutine(OpenClose(moveSpeed));
     }
 
-    private IEnumerator OpenClose()
+    private IEnumerator OpenClose(float moveSpeed)
     {
         if (isOpen)
         {

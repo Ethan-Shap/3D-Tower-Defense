@@ -5,7 +5,9 @@ public class Shop : MonoBehaviour {
 
     public static Shop instance;
 
-    private static Previewer previewer;
+    private Previewer previewer;
+    private Player player;
+    private ShopItem currentItem;
 
     private void Awake()
     {
@@ -14,15 +16,22 @@ public class Shop : MonoBehaviour {
 
     private void Start()
     {
+        player = Player.instance;
         previewer = Previewer.instance;
     }
 
     public void AttemptItemBuy(ShopItem itemToBuy)
     {
-        if (Player.instance.coins < itemToBuy.cost)
+        if (player.GetCoins() < itemToBuy.cost)
             return;
 
+        currentItem = itemToBuy;
         previewer.PreviewTower(itemToBuy.item);
+    }
+
+    public void ComfirmItemPurchase()
+    {
+        player.AddCoins(-currentItem.cost);
     }
 
 }

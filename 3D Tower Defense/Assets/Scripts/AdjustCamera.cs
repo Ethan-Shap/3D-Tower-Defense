@@ -21,6 +21,7 @@ public class AdjustCamera : MonoBehaviour {
 
     private Vector2 prevPos;
     private float minXRot = 3, maxXRot = 45;
+    private Previewer previewer;
 
     // Use this for initialization
     void Start ()
@@ -33,18 +34,34 @@ public class AdjustCamera : MonoBehaviour {
 
         c = cameraParent.GetComponentInChildren<Camera>();
         c.transform.LookAt(cameraFocusPoint);
+
+        previewer = Previewer.instance;
+
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.touchCount == 1)
+        if (!previewer.Previewing)
         {
-            Rotate();
-            cameraParent.transform.eulerAngles = new Vector3(cameraParent.transform.eulerAngles.x, cameraParent.transform.eulerAngles.y, 0);
-        } else if(Input.touchCount == 2)
+            // Camera movment when there is no tower preview
+            if (Input.touchCount == 1)
+            {
+                Rotate();
+                cameraParent.transform.eulerAngles = new Vector3(cameraParent.transform.eulerAngles.x, cameraParent.transform.eulerAngles.y, 0);
+            }
+            else if (Input.touchCount == 2)
+            {
+                Zoom();
+            }
+        } else
         {
-            Zoom();
+            // Camera Movement if there's a tower being previewed
+            if(Input.touchCount == 2)
+            {
+                Rotate();
+                cameraParent.transform.eulerAngles = new Vector3(cameraParent.transform.eulerAngles.x, cameraParent.transform.eulerAngles.y, 0);
+            }
         }
 	}
 
