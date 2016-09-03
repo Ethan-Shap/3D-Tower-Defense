@@ -29,7 +29,7 @@ public class Shop : MonoBehaviour {
 
     public void AttemptItemBuy(ShopItem itemToBuy)
     {
-        if (player.GetCoins() < itemToBuy.cost)
+        if (player.Coins < itemToBuy.cost)
             return;
 
         cancelPurchaseButton.SetActive(true);
@@ -62,7 +62,7 @@ public class Shop : MonoBehaviour {
         cancelPurchaseButton.SetActive(false);
         comfirmPurchaseButton.SetActive(false);
 
-        player.AddCoins(-currentItem.cost);
+        player.Coins += -currentItem.cost;
     }
 
 }

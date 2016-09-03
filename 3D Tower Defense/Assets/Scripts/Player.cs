@@ -5,39 +5,52 @@ public class Player : MonoBehaviour {
 
     public static Player instance;
 
-    public int coins = 100;
-    public int health = 100;
+    private int coins = 100;
+    private int health = 100;
+    private Display display;
 
-	// Use this for initialization
-	void Start ()
+    public int Health
+    {
+        get
+        {
+            return health;
+        }
+
+        set
+        {
+            display.SetHealthText(health.ToString());
+            health = value;
+        }
+    }
+
+    public int Coins
+    {
+        get
+        {
+            return coins;
+        }
+
+        set
+        {
+            coins = value;
+            display.SetCoinsText(coins.ToString());
+        }
+    }
+
+    private void Awake()
     {
         instance = this;
+    }
+
+    // Use this for initialization
+    void Start ()
+    {
+        display = Display.instance;
 	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	
-	}
 
-    public void AddHealth(int health)
+    public void OpenTowerUpgradeWindow()
     {
-        this.health = health;
-    }
 
-    public int GetHealth()
-    {
-        return health;
-    }
-
-    public void AddCoins(int coins)
-    {
-        this.coins = coins;
-    }
-
-    public int GetCoins()
-    {
-        return this.coins;
     }
 
 }
