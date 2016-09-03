@@ -24,12 +24,6 @@ public class Display : MonoBehaviour {
         coinsText.text = player.Coins.ToString();
         healthText.text = player.Health.ToString();
 	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	
-	}
 
     public void SetCoinsText(string text)
     {

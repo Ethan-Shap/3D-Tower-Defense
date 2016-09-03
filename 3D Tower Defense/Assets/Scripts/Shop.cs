@@ -27,22 +27,32 @@ public class Shop : MonoBehaviour {
         comfirmPurchaseButton.SetActive(false);
     }
 
+    /// <summary>
+    /// Attempt to buy an item from the shop, if the player has enough money
+    /// </summary>
+    /// <param name="itemToBuy"></param>
     public void AttemptItemBuy(ShopItem itemToBuy)
     {
         if (player.Coins < itemToBuy.cost)
             return;
 
+        // Enables the cancel and comfirm purchase buttons for the user
         cancelPurchaseButton.SetActive(true);
         comfirmPurchaseButton.SetActive(true);
 
         currentItem = itemToBuy;
 
+        // If the current item is a tower, show preview
         if(currentItem.item.GetComponent<Tower>())
             previewer.PreviewTower(itemToBuy.item);
     }
 
+    /// <summary>
+    /// Cancels item purchase, takes no money from the user
+    /// </summary>
     public void CancelItemPurchase()
     {
+        // Exits preview if the current item is a tower
         if (currentItem.item.GetComponent<Tower>())
         {
             previewer.ExitPreview();
@@ -53,16 +63,19 @@ public class Shop : MonoBehaviour {
 
     public void ComfirmItemPurchase()
     {
-        if (currentItem.item.GetComponent<Tower>())
+        if (currentItem.item.GetComponent<Tower>() && previewer.overlapping)
         {
+            cancelPurchaseButton.SetActive(false);
+            comfirmPurchaseButton.SetActive(false);
             previewer.Previewing = false;
             gameManager.selectedTower.GetComponent<Tower>().TriggerBuildAnimation();
+            player.Coins += -currentItem.cost;
+        } else
+        {
+            player.Coins += -currentItem.cost;
+            cancelPurchaseButton.SetActive(false);
+            comfirmPurchaseButton.SetActive(false);
         }
-
-        cancelPurchaseButton.SetActive(false);
-        comfirmPurchaseButton.SetActive(false);
-
-        player.Coins += -currentItem.cost;
     }
 
 }

@@ -48,9 +48,4 @@ public class Player : MonoBehaviour {
         display = Display.instance;
 	}
 
-    public void OpenTowerUpgradeWindow()
-    {
-
-    }
-
 }

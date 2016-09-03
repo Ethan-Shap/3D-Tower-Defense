@@ -7,6 +7,7 @@ public class Previewer : MonoBehaviour {
     public float touchDist = 10f;
     public float previewAlpha;
     public Camera mainCamera;
+    public bool overlapping;
 
     private bool previewing;
     private GameManager gameManager;
