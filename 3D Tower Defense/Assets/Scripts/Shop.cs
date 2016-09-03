@@ -5,8 +5,12 @@ public class Shop : MonoBehaviour {
 
     public static Shop instance;
 
+    public GameObject cancelPurchaseButton;
+    public GameObject comfirmPurchaseButton;
+
     private Previewer previewer;
     private Player player;
+    private GameManager gameManager;
     private ShopItem currentItem;
 
     private void Awake()
@@ -18,6 +22,9 @@ public class Shop : MonoBehaviour {
     {
         player = Player.instance;
         previewer = Previewer.instance;
+        gameManager = GameManager.instance;
+        cancelPurchaseButton.SetActive(false);
+        comfirmPurchaseButton.SetActive(false);
     }
 
     public void AttemptItemBuy(ShopItem itemToBuy)
@@ -25,12 +32,36 @@ public class Shop : MonoBehaviour {
         if (player.GetCoins() < itemToBuy.cost)
             return;
 
+        cancelPurchaseButton.SetActive(true);
+        comfirmPurchaseButton.SetActive(true);
+
         currentItem = itemToBuy;
-        previewer.PreviewTower(itemToBuy.item);
+
+        if(currentItem.item.GetComponent<Tower>())
+            previewer.PreviewTower(itemToBuy.item);
+    }
+
+    public void CancelItemPurchase()
+    {
+        if (currentItem.item.GetComponent<Tower>())
+        {
+            previewer.ExitPreview();
+        }
+        cancelPurchaseButton.SetActive(false);
+        comfirmPurchaseButton.SetActive(false);
     }
 
     public void ComfirmItemPurchase()
     {
+        if (currentItem.item.GetComponent<Tower>())
+        {
+            previewer.Previewing = false;
+            gameManager.selectedTower.GetComponent<Tower>().TriggerBuildAnimation();
+        }
+
+        cancelPurchaseButton.SetActive(false);
+        comfirmPurchaseButton.SetActive(false);
+
         player.AddCoins(-currentItem.cost);
     }
 

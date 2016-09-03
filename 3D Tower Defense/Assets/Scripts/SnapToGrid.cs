@@ -39,6 +39,7 @@ public class SnapToGrid : MonoBehaviour {
             }
             int minIndex = Array.IndexOf(distances, distances.Min());
             gameManager.selectedTower.transform.position = new Vector3(snapPositions[minIndex].transform.position.x + xOffset, snapPositions[minIndex].transform.position.y + yOffset, snapPositions[minIndex].transform.position.z + zOffset);
+            gameManager.selectedTower.transform.SetParent(snapPositions[minIndex].transform);
         }   
 	}
 }
