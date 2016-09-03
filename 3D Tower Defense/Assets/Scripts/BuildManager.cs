@@ -18,12 +18,6 @@ public class BuildManager : MonoBehaviour {
         previewer = Previewer.instance;
     }
 
-	// Update is called once per frame
-	void Update ()
-    {
-	    
-	}
-
     public GameObject BuildTower(GameObject obj)
     {
         GameObject newTower = (GameObject)Instantiate(obj, Vector3.zero, Quaternion.identity);

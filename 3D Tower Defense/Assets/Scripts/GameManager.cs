@@ -3,6 +3,9 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+    public GameObject selectedTower = null;
+    public static GameManager instance;
+
     [SerializeField]
     private int numRounds = 20;
 
@@ -10,6 +13,11 @@ public class GameManager : MonoBehaviour {
     private int numRdsBetweenEnemyAdd = 5;
 
     private Player p;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
 	// Use this for initialization
 	void Start ()
