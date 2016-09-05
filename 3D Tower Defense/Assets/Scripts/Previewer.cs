@@ -4,12 +4,12 @@ public class Previewer : MonoBehaviour {
 
     public static Previewer instance;
 
-    public float touchDist = 10f;
+    public float overlapRadius = 0.3f;
     public float previewAlpha;
     public Camera mainCamera;
-    public bool overlapping;
 
     private bool previewing;
+    private bool overlapping = false;
     private GameManager gameManager;
     private BuildManager buildManager;
     private Shop shop;
@@ -25,6 +25,19 @@ public class Previewer : MonoBehaviour {
         set
         {
             previewing = value;
+        }
+    }
+
+    public bool Overlapping
+    {
+        get
+        {
+            return overlapping;
+        }
+
+        set
+        {
+            overlapping = value;
         }
     }
 
@@ -44,8 +57,10 @@ public class Previewer : MonoBehaviour {
 
     private void Update()
     {
-        if (Previewing)
+        if (Previewing && gameManager.selectedTower != null)
         {
+            Overlapping = OverlappingTowers();
+            shop.UpdateButtons();
             if (Input.touchCount == 1)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.GetTouch(0).position);
@@ -96,6 +111,19 @@ public class Previewer : MonoBehaviour {
         }
 
         Previewing = true;
+    }
+
+    private bool OverlappingTowers()
+    {
+        Collider[] colliders = Physics.OverlapSphere(gameManager.selectedTower.transform.position, overlapRadius);
+        foreach(Collider col in colliders)
+        {
+            if (col != gameManager.selectedTower.GetComponent<Collider>())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void MakeTowerTransparent(GameObject tower)

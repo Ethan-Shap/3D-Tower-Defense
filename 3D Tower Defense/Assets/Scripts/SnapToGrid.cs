@@ -10,10 +10,14 @@ public class SnapToGrid : MonoBehaviour {
     private Transform[] snapPositions;
 
     private GameManager gameManager;
+    private Transform towerParent;
 
 	// Use this for initialization
 	void Start ()
     {
+        towerParent = new GameObject("PlacedTowers").transform;
+        towerParent.transform.SetParent(transform);
+
         Transform[] snapPosWithParent = snapPosParent.GetComponentsInChildren<Transform>();
         snapPositions = new Transform[snapPosWithParent.Length - 1];
         for(int i = 0; i < snapPosWithParent.Length; i++)
@@ -34,12 +38,12 @@ public class SnapToGrid : MonoBehaviour {
             float[] distances = new float[snapPositions.Length];
             for(int i = 0; i < snapPositions.Length; i++)
             {
-                Vector3 snapPosWithOffset = new Vector3(snapPositions[i].position.x + xOffset, snapPositions[i].position.y, snapPositions[i].position.z + zOffset);
+                Vector3 snapPosWithOffset = new Vector3(snapPositions[i].position.x + xOffset, snapPositions[i].position.y + yOffset, snapPositions[i].position.z + zOffset);
                 distances[i] = Vector3.SqrMagnitude(gameManager.selectedTower.transform.position - snapPosWithOffset);
             }
             int minIndex = Array.IndexOf(distances, distances.Min());
             gameManager.selectedTower.transform.position = new Vector3(snapPositions[minIndex].transform.position.x + xOffset, snapPositions[minIndex].transform.position.y + yOffset, snapPositions[minIndex].transform.position.z + zOffset);
-            gameManager.selectedTower.transform.SetParent(snapPositions[minIndex].transform);
+            gameManager.selectedTower.transform.SetParent(towerParent);
         }   
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 public class Shop : MonoBehaviour {
 
@@ -63,18 +63,45 @@ public class Shop : MonoBehaviour {
 
     public void ComfirmItemPurchase()
     {
-        if (currentItem.item.GetComponent<Tower>() && previewer.overlapping)
+        if (!previewer.Overlapping)
         {
-            cancelPurchaseButton.SetActive(false);
-            comfirmPurchaseButton.SetActive(false);
-            previewer.Previewing = false;
-            gameManager.selectedTower.GetComponent<Tower>().TriggerBuildAnimation();
-            player.Coins += -currentItem.cost;
-        } else
+            if (currentItem.item.GetComponent<Tower>())
+            {
+                cancelPurchaseButton.SetActive(false);
+                comfirmPurchaseButton.SetActive(false);
+                previewer.Previewing = false;
+                gameManager.selectedTower.GetComponent<Tower>().TriggerBuildAnimation();
+                player.Coins += -currentItem.cost;
+            }
+            else if (!currentItem.item.GetComponent<Tower>())
+            {
+                player.Coins += -currentItem.cost;
+                cancelPurchaseButton.SetActive(false);
+                comfirmPurchaseButton.SetActive(false);
+            }
+        } 
+    }
+
+    public void UpdateButtons()
+    {
+        if (previewer.Previewing)
         {
-            player.Coins += -currentItem.cost;
-            cancelPurchaseButton.SetActive(false);
-            comfirmPurchaseButton.SetActive(false);
+            if (!previewer.Overlapping)
+            {
+                comfirmPurchaseButton.GetComponent<Button>().interactable = true;
+                Color c = comfirmPurchaseButton.GetComponent<Image>().color;
+                c.a = 1f;
+
+                comfirmPurchaseButton.GetComponent<Image>().color = c;
+            } else
+            {
+                comfirmPurchaseButton.GetComponent<Button>().interactable = false;
+
+                Color c = comfirmPurchaseButton.GetComponent<Image>().color;
+                c.a = 0.5f;
+
+                comfirmPurchaseButton.GetComponent<Image>().color = c;
+            }
         }
     }
 
