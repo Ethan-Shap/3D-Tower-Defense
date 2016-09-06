@@ -8,6 +8,8 @@ public class Tower : MonoBehaviour {
     public string title;
     public int damage;
     public float range;
+    public Transform partToRotate;
+    public float rotSpeed = 10f;
 
     private Animator animator;
 
@@ -54,6 +56,9 @@ public class Tower : MonoBehaviour {
         if(closestDistance <= range)
         {
             currentEnemy = closestEnemy;
+            Vector3 dir = partToRotate.position - currentEnemy.transform.position;
+            Quaternion lookRot = Quaternion.LookRotation(dir);
+            partToRotate.transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, Time.deltaTime * rotSpeed);
         }
     }
 

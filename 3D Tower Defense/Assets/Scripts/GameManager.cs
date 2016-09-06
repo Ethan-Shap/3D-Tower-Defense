@@ -7,10 +7,8 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
 
     [SerializeField]
-    private int numRounds = 20;
-
-    [SerializeField]
-    private int numRdsBetweenEnemyAdd = 5;
+    public int numRounds = 20;
+    public int addNewEnemyAfterRounds = 5;
 
     private Player p;
 
