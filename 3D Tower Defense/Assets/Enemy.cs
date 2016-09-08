@@ -3,8 +3,29 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-	// Use this for initialization
-	void Start ()
+    public enum Type
+    {
+
+    }
+
+    [SerializeField]
+    private float speed;
+
+    public float Speed
+    {
+        get
+        {
+            return speed;
+        }
+
+        set
+        {
+            speed = value;
+        }
+    }
+
+    // Use this for initialization
+    void Start ()
     {
 	
 	}
