@@ -9,8 +9,11 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     public int numRounds = 20;
     public int addNewEnemyAfterRounds = 5;
+    public bool gameStarted = false;
+    public float waitTime = 10f;
 
     private Player p;
+    private EnemySpawner enemySpawner;
 
     private void Awake()
     {
@@ -21,12 +24,17 @@ public class GameManager : MonoBehaviour {
 	void Start ()
     {
         p = Player.instance;
+        enemySpawner = EnemySpawner.instance;
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-	    
+        if (Time.realtimeSinceStartup > waitTime && gameStarted == false)
+        {
+            enemySpawner.SpawnEnemies(2);
+            gameStarted = true;
+        }
 	}
 
     void OnGUI()

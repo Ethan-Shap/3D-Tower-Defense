@@ -5,7 +5,7 @@ public class PathManager : MonoBehaviour {
 
     public static PathManager instance;
 
-    private List<Transform> waypoints;
+    private List<Path> paths;
     private float pathDistance;
 
     private void Awake()
@@ -13,13 +13,13 @@ public class PathManager : MonoBehaviour {
         instance = this;
 
         Transform[] tempWaypoints = GetComponentsInChildren<Transform>();
-        waypoints = new List<Transform>();
 
         for (int i = 0; i < tempWaypoints.Length; i++)
         {
             if (tempWaypoints[i].parent == this.transform)
             {
-                waypoints.Add(tempWaypoints[i]);
+                Path newPath = new Path();
+                paths.Add(newPath);
             }
         }
 

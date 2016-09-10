@@ -5,8 +5,10 @@ public class Enemy : MonoBehaviour {
 
     public enum Type
     {
-
+        White, Red, Blue, Grey, BOSS
     }
+
+    public Path currentPath;
 
     [SerializeField]
     private float speed;
@@ -27,7 +29,7 @@ public class Enemy : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-	
+
 	}
 	
 	// Update is called once per frame
