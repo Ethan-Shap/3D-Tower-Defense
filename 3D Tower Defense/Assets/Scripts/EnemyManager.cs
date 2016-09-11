@@ -2,16 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class EnemySpawner : MonoBehaviour {
+public class EnemyManager : MonoBehaviour {
 
-    public static EnemySpawner instance;
+    public static EnemyManager instance;
+
+    public enum EnemyType
+    {
+        White, Red, Blue, Grey, BOSS
+    }
 
     [Tooltip("Put enemies in order of difficulty")]
     public GameObject[] enemyPrefabs;
     public float enemyMultiplier = 20f;
 
     private float spawnRate;
-    private float spawnRateMin = 0.1f;
+    private float spawnRateMin = 0.7f;
     private float spawnRateMax = 1f;
 
     private int[] enemySpawnPattern;
@@ -39,6 +44,7 @@ public class EnemySpawner : MonoBehaviour {
         }
 
         gameManager.addNewEnemyAfterRounds = (gameManager.numRounds / enemyPrefabs.Length);
+
         poolParents = new Transform[enemyPrefabs.Length];
         enemies = new List<Transform>[enemyPrefabs.Length];
         paths = GameObject.FindObjectsOfType<Path>();
@@ -46,8 +52,6 @@ public class EnemySpawner : MonoBehaviour {
         for (int i = 0; i < enemyPrefabs.Length; i++)
         {
             enemies[i] = new List<Transform>();
-            GameObject newParent = new GameObject("PoolPos" + i);
-            poolParents[i] = newParent.transform;
         }
 
         CalculateAndInstantiateMaxEnemiesInGame();
@@ -66,7 +70,6 @@ public class EnemySpawner : MonoBehaviour {
     private IEnumerator MoveEnemies(int round, int numEnemies, int numTypesToUse)
     {
         int typeToSpawn = 0;
-        int[] numUsed = new int[numTypesToUse];
 
         for(int i = 0; i < numEnemies; i++)
         {
@@ -81,15 +84,35 @@ public class EnemySpawner : MonoBehaviour {
             //Debug.Log(enemies.Count);
             //Debug.Log(enemies[numUsed[typeToSpawn]]);
 
-            Debug.Log(i);
+            //Debug.Log(i);
 
-            enemies[typeToSpawn][numUsed[typeToSpawn]].transform.position = transform.position;
-            enemies[typeToSpawn][numUsed[typeToSpawn]].GetComponent<Enemy>().currentPath = paths[i%2];
-            numUsed[typeToSpawn]++;
+            if (enemies[typeToSpawn].Count == 0)
+                CreateExtraEnemies();
+
+            enemies[typeToSpawn][0].transform.position = transform.position;
+            enemies[typeToSpawn][0].GetComponent<Enemy>().currentPath = paths[paths.Length >= 2 ? i % paths.Length : 0];
+            enemies[typeToSpawn].RemoveAt(0);
+
             yield return new WaitForSeconds(spawnRate);
         }
     }
 
+    private void CreateExtraEnemies()
+    {
+
+    }
+
+    public void ResetPosition(Enemy enemy)
+    {
+        for(int i = 0; i < enemyPrefabs.Length; i++)
+        {
+            if (enemyPrefabs[i].GetComponent<Enemy>().type == enemy.type)
+            {
+                enemy.transform.position = poolParents[i].transform.position;
+                enemies[i].Add(enemy.transform);
+            }
+        }
+    }
 
     private int RandomNewEnemyType(int currentType, int numTypes)
     {
@@ -117,10 +140,15 @@ public class EnemySpawner : MonoBehaviour {
         for (int i = 0; i < enemyPrefabs.Length; i++)
         {
             poolPos += new Vector3(0, -100, 0);
-            float travelTime = (totalPathDist / enemyPrefabs[i].GetComponent<Enemy>().Speed);
-            int maxEnemiesInGame = Mathf.RoundToInt(spawnRate * travelTime);
 
-            // Add 2 Extra enemies just in case 
+            GameObject newParent = new GameObject("PoolPos" + i);
+            newParent.transform.position = poolPos;
+            poolParents[i] = newParent.transform;
+
+            float travelTime = (totalPathDist / enemyPrefabs[i].GetComponent<Enemy>().Speed);
+            int maxEnemiesInGame = Mathf.RoundToInt((1 + spawnRate) * travelTime);
+
+            // Add 10 Extra enemies just in case 
             maxEnemiesInGame += 10;
 
             for(int j = 0; j <= maxEnemiesInGame; j++)
@@ -131,5 +159,4 @@ public class EnemySpawner : MonoBehaviour {
             }
         }
     }
-
 }

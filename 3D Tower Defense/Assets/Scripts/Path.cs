@@ -18,7 +18,7 @@ public class Path : MonoBehaviour {
 
     public int NextWaypoint(int currentWaypoint)
     {
-        if (currentWaypoint + 1 <= waypoints.Length)
+        if (currentWaypoint + 1 < waypoints.Length)
             return currentWaypoint + 1;
 
         return -1;

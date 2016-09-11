@@ -3,10 +3,7 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-    public enum Type
-    {
-        White, Red, Blue, Grey, BOSS
-    }
+    public EnemyManager.EnemyType type;
 
     public Path currentPath;
 
@@ -46,9 +43,15 @@ public class Enemy : MonoBehaviour {
     {
         transform.position = Vector3.MoveTowards(transform.position, currentPath.GetWaypointPosition(currentWaypoint).position, speed * Time.deltaTime);
 
-        if(currentPath.WithinDistance(transform.position, currentWaypoint))
+        if (currentPath.WithinDistance(transform.position, currentWaypoint))
         {
             currentWaypoint = currentPath.NextWaypoint(currentWaypoint);
+        }
+
+        if (currentWaypoint < 0)
+        {
+            currentPath = null;
+            EnemyManager.instance.ResetPosition(this);
         }
     }
 
