@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        Debug.Log("Total Rounds " + numRounds);
         instance = this;
     }
 
@@ -32,7 +33,7 @@ public class GameManager : MonoBehaviour {
     {
         if (Time.realtimeSinceStartup > waitTime && gameStarted == false)
         {
-            enemySpawner.SpawnEnemies(2);
+            enemySpawner.SpawnEnemies(8);
             gameStarted = true;
         }
 	}
