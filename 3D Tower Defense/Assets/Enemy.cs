@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour {
 
     [SerializeField]
     private float speed;
+    private int currentWaypoint = 0;
 
     public float Speed
     {
@@ -35,6 +36,20 @@ public class Enemy : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-	
+        if (currentPath)
+        {
+            MoveTowardsWaypoint();
+        }
 	}
+
+    private void MoveTowardsWaypoint()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, currentPath.GetWaypointPosition(currentWaypoint).position, speed * Time.deltaTime);
+
+        if(currentPath.WithinDistance(transform.position, currentWaypoint))
+        {
+            currentWaypoint = currentPath.NextWaypoint(currentWaypoint);
+        }
+    }
+
 }

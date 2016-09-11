@@ -17,10 +17,11 @@ public class EnemySpawner : MonoBehaviour {
     private int[] enemySpawnPattern;
     private int maxNumberOfEnemies;
 
-    private List<Transform> enemies;
+    private List<Transform>[] enemies;
     private Transform[] poolParents;
     private GameManager gameManager;
-    private PathManager pathManager;
+
+    private Path[] paths;
 
     private void Awake()
     {
@@ -31,7 +32,6 @@ public class EnemySpawner : MonoBehaviour {
     {
         gameManager = GameManager.instance;
         spawnRate = Random.Range(spawnRateMin, spawnRateMax);
-        pathManager = PathManager.instance;
 
         if (gameManager.numRounds % enemyPrefabs.Length != 0)
         {
@@ -40,10 +40,12 @@ public class EnemySpawner : MonoBehaviour {
 
         gameManager.addNewEnemyAfterRounds = (gameManager.numRounds / enemyPrefabs.Length);
         poolParents = new Transform[enemyPrefabs.Length];
-        enemies = new List<Transform>();
+        enemies = new List<Transform>[enemyPrefabs.Length];
+        paths = GameObject.FindObjectsOfType<Path>();
 
         for (int i = 0; i < enemyPrefabs.Length; i++)
         {
+            enemies[i] = new List<Transform>();
             GameObject newParent = new GameObject("PoolPos" + i);
             poolParents[i] = newParent.transform;
         }
@@ -55,45 +57,67 @@ public class EnemySpawner : MonoBehaviour {
     {
         int numEnemies = (int)(round * enemyMultiplier);
         int numEnemyTypesToUse = round / gameManager.addNewEnemyAfterRounds + 1;
+        Debug.Log("Number of enemies to use " + numEnemyTypesToUse);
+        Debug.Log("Number of Enemies " + numEnemies);
 
         StartCoroutine(MoveEnemies(round, numEnemies, numEnemyTypesToUse));
     }
 
-    private IEnumerator MoveEnemies(int round, int numEnemies, int numEnemyTypesToUse)
+    private IEnumerator MoveEnemies(int round, int numEnemies, int numTypesToUse)
     {
-        int enemyTypeToSpawn = 0;
-        int[] numEnemiesUsed = new int[numEnemyTypesToUse];
+        int typeToSpawn = 0;
+        int[] numUsed = new int[numTypesToUse];
+
         for(int i = 0; i < numEnemies; i++)
         {
-            if (numEnemyTypesToUse > 1)
+            if (numTypesToUse > 1 && i % gameManager.addNewEnemyAfterRounds == 0)
             {
-                int randomType = Random.Range(0, numEnemyTypesToUse);
-                while(randomType == enemyTypeToSpawn)
-                    randomType = Random.Range(0, numEnemyTypesToUse);
-
-                enemyTypeToSpawn = randomType;
+                typeToSpawn = RandomNewEnemyType(typeToSpawn, numTypesToUse);
+                Debug.Log("Type to spawn " + typeToSpawn);
             }
 
-            Debug.Log(numEnemiesUsed[enemyTypeToSpawn]);
-            enemies[numEnemiesUsed[enemyTypeToSpawn]].transform.position = transform.position;
-            numEnemiesUsed[enemyTypeToSpawn]++;
+            //Debug.Log(typeToSpawn);
+            //Debug.Log(numUsed[typeToSpawn]);
+            //Debug.Log(enemies.Count);
+            //Debug.Log(enemies[numUsed[typeToSpawn]]);
+
+            Debug.Log(i);
+
+            enemies[typeToSpawn][numUsed[typeToSpawn]].transform.position = transform.position;
+            enemies[typeToSpawn][numUsed[typeToSpawn]].GetComponent<Enemy>().currentPath = paths[i%2];
+            numUsed[typeToSpawn]++;
             yield return new WaitForSeconds(spawnRate);
         }
     }
 
 
-    private int RandomizeSpawn(int numEnemies)
+    private int RandomNewEnemyType(int currentType, int numTypes)
     {
-        return Random.Range(0, numEnemies + 1);
+        int newType = currentType;
+        while (newType == currentType)
+            newType = Random.Range(0, numTypes);
+
+        return newType;
     }
 
     private void CalculateAndInstantiateMaxEnemiesInGame()
     {
         Vector3 poolPos = new Vector3(0, -100, 0);
+
+        float totalPathDist = 0;
+
+        if (paths.Length == 0)
+            throw new UnityException("No Paths to calculate distance from");
+
+        for(int i = 0; i < paths.Length; i++)
+            totalPathDist += paths[i].TotalDistance();
+        
+        totalPathDist /= paths.Length;
+
         for (int i = 0; i < enemyPrefabs.Length; i++)
         {
             poolPos += new Vector3(0, -100, 0);
-            float travelTime = (pathManager.GetPathDistance() / enemyPrefabs[i].GetComponent<Enemy>().Speed);
+            float travelTime = (totalPathDist / enemyPrefabs[i].GetComponent<Enemy>().Speed);
             int maxEnemiesInGame = Mathf.RoundToInt(spawnRate * travelTime);
 
             // Add 2 Extra enemies just in case 
@@ -103,7 +127,7 @@ public class EnemySpawner : MonoBehaviour {
             {
                 GameObject newEnemy = Instantiate(enemyPrefabs[i], poolPos, Quaternion.identity) as GameObject;
                 newEnemy.transform.SetParent(poolParents[i]);
-                enemies.Add(newEnemy.transform);
+                enemies[i].Add(newEnemy.transform);
             }
         }
     }
