@@ -8,6 +8,7 @@ public class Display : MonoBehaviour {
 
     public Text healthText;
     public Text coinsText;
+    public Button startRoundButton;
 
     private Player player;
 
