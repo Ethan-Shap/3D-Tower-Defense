@@ -67,7 +67,7 @@ public class AdjustCamera : MonoBehaviour {
 
     private void Zoom()
     {
-        //// Calculate distance between touches 
+        // Calculate distance between touches 
         float curDist = Vector3.SqrMagnitude(Input.touches[0].position - Input.touches[1].position);
 
         // Determine which way too zoom

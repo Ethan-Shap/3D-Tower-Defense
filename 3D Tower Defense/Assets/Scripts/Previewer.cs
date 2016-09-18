@@ -192,9 +192,12 @@ public class Previewer : MonoBehaviour {
             #endregion
 
             // Set Alpha for materals
-            Color c = previewMaterials[i].color;
-            c.a = previewAlpha;
-            previewMaterials[i].color = c;
+            if (previewMaterials[i].HasProperty("_Color"))
+            {
+                Color c = previewMaterials[i].color;
+                c.a = previewAlpha;
+                previewMaterials[i].color = c;
+            }
         }
     }
 
@@ -223,9 +226,12 @@ public class Previewer : MonoBehaviour {
             currentMaterials[i].renderQueue = -1;
 
             // Set Alpha for materals
-            Color c = currentMaterials[i].color;
-            c.a = 1;
-            currentMaterials[i].color = c;
+            if (currentMaterials[i].HasProperty("_Color"))
+            {
+                Color c = currentMaterials[i].color;
+                c.a = 1;
+                currentMaterials[i].color = c;
+            }
         }
     }
 }

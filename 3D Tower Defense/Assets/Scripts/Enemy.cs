@@ -23,12 +23,6 @@ public class Enemy : MonoBehaviour {
             speed = value;
         }
     }
-
-    // Use this for initialization
-    void Start ()
-    {
-
-	}
 	
 	// Update is called once per frame
 	void Update ()

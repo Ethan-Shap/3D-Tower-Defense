@@ -8,13 +8,29 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField]
     public int numRounds = 20;
+    [SerializeField]
     public int round = 1;
     public int addNewEnemyAfterRounds = 5;
-    public bool gameStarted = false;
     public float waitTime = 10f;
+    public GameObject startRoundButton;
 
     private Player p;
-    private EnemyManager enemySpawner;
+    private EnemyManager enemyManager;
+
+    public bool RoundStarted
+    {
+        get
+        {
+            return roundStarted;
+        }
+
+        set
+        {
+            startRoundButton.SetActive(!startRoundButton.activeSelf);
+            roundStarted = value;
+        }
+    }
+    private bool roundStarted = false;
 
     private void Awake()
     {
@@ -26,19 +42,32 @@ public class GameManager : MonoBehaviour {
 	void Start ()
     {
         p = Player.instance;
-        enemySpawner = EnemyManager.instance;
+        enemyManager = EnemyManager.instance;
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (Time.realtimeSinceStartup > waitTime && gameStarted == false)
-        {
-            enemySpawner.SpawnEnemies(round);
-            gameStarted = true;
-        }
+        
 	}
 
+    public void StartRound()
+    {
+        if (!RoundStarted)
+        {
+            Debug.Log("Round " + round);
+            enemyManager.SpawnEnemies(round);
+            RoundStarted = true;
+        }
+    }
+
+    public void EndRound()
+    {
+        RoundStarted = false;
+        round++;
+    }
+
+#if DEBUG
     void OnGUI()
     {
         GUIStyle myStyle = new GUIStyle(GUI.skin.button);
@@ -52,6 +81,19 @@ public class GameManager : MonoBehaviour {
         if (GUI.Button(new Rect(480, 25, 50, 20), "Add Health", myStyle))
             p.Health += 100;
 
+        //Speed Up Enemies
+        if (GUI.Button(new Rect(500, 50, 50, 50), "5x Speed", myStyle))
+        {
+            Enemy[] activeEnemies = enemyManager.GetActiveEnemies();
+            enemyManager.SpawnRate = 0.01f;
+            foreach(Enemy enemy in activeEnemies)
+            {
+                enemy.Speed = 5;
+            }
+        }
+            
+
     }
+#endif
 
 }

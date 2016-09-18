@@ -8,8 +8,6 @@ public class Tower : MonoBehaviour {
     public string title;
     public int damage;
     public float range;
-    public Transform partToRotate;
-    public float rotSpeed = 10f;
 
     private Animator animator;
 
@@ -38,27 +36,38 @@ public class Tower : MonoBehaviour {
         Gizmos.DrawWireSphere(transform.position, 0.4f);
     }
 
+    public Enemy GetCurrentEnemy()
+    {
+        if (currentEnemy != null)
+            return currentEnemy;
+        return null;
+    }
+
     private void TargetNearestEnemy()
     {
-        enemies = GameObject.FindObjectsOfType<Enemy>();
+        enemies = EnemyManager.instance.GetActiveEnemies();
         float closestDistance = Mathf.Infinity;
         Enemy closestEnemy = null;
         foreach(Enemy enemy in enemies)
         {
             float distance = Vector3.SqrMagnitude(transform.position - enemy.transform.position);
-            if (distance < closestDistance)
+            if (distance < closestDistance * closestDistance)
             {
                 closestDistance = distance;
                 closestEnemy = enemy;
             }
         }
 
-        if(closestDistance <= range)
+        //Debug.Log(closestDistance);
+        //Debug.Log(range * range);
+
+        if (closestDistance * closestDistance <= range * range)
         {
+            Debug.Log("CLOSE");
             currentEnemy = closestEnemy;
-            Vector3 dir = partToRotate.position - currentEnemy.transform.position;
-            Quaternion lookRot = Quaternion.LookRotation(dir);
-            partToRotate.transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, Time.deltaTime * rotSpeed);
+        } else
+        {
+            currentEnemy = null;
         }
     }
 

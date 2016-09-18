@@ -24,9 +24,23 @@ public class EnemyManager : MonoBehaviour {
 
     private List<Transform>[] enemies;
     private Transform[] poolParents;
+    private Transform activeEnemyParent;
     private GameManager gameManager;
 
     private Path[] paths;
+
+    public float SpawnRate
+    {
+        get
+        {
+            return spawnRate;
+        }
+
+        set
+        {
+            spawnRate = value;
+        }
+    }
 
     private void Awake()
     {
@@ -36,7 +50,7 @@ public class EnemyManager : MonoBehaviour {
     private void Start()
     {
         gameManager = GameManager.instance;
-        spawnRate = Random.Range(spawnRateMin, spawnRateMax);
+        SpawnRate = Random.Range(spawnRateMin, spawnRateMax);
 
         if (gameManager.numRounds % enemyPrefabs.Length != 0)
         {
@@ -48,6 +62,7 @@ public class EnemyManager : MonoBehaviour {
         poolParents = new Transform[enemyPrefabs.Length];
         enemies = new List<Transform>[enemyPrefabs.Length];
         paths = GameObject.FindObjectsOfType<Path>();
+        activeEnemyParent = new GameObject("Active Enemy").transform;
 
         for (int i = 0; i < enemyPrefabs.Length; i++)
         {
@@ -91,11 +106,19 @@ public class EnemyManager : MonoBehaviour {
 
             enemies[typeToSpawn][0].transform.position = transform.position;
             enemies[typeToSpawn][0].GetComponent<Enemy>().currentPath = paths[paths.Length >= 2 ? i % paths.Length : 0];
+            enemies[typeToSpawn][0].gameObject.SetActive(true);
+            enemies[typeToSpawn][0].SetParent(activeEnemyParent.transform);
             enemies[typeToSpawn].RemoveAt(0);
 
-            yield return new WaitForSeconds(spawnRate);
+            yield return new WaitForSeconds(SpawnRate);
         }
-    }
+        while (activeEnemyParent.transform.childCount > 0)
+        { 
+            yield return new WaitForSeconds(0.25f);
+        }
+        
+        gameManager.EndRound();
+   }
 
     private void CreateExtraEnemies()
     {
@@ -108,10 +131,17 @@ public class EnemyManager : MonoBehaviour {
         {
             if (enemyPrefabs[i].GetComponent<Enemy>().type == enemy.type)
             {
+                enemy.transform.SetParent(poolParents[i].transform);
+                enemy.gameObject.SetActive(false);
                 enemy.transform.position = poolParents[i].transform.position;
                 enemies[i].Add(enemy.transform);
             }
         }
+    }
+
+    public Enemy[] GetActiveEnemies()
+    {
+        return activeEnemyParent.GetComponentsInChildren<Enemy>();
     }
 
     private int RandomNewEnemyType(int currentType, int numTypes)
@@ -146,7 +176,7 @@ public class EnemyManager : MonoBehaviour {
             poolParents[i] = newParent.transform;
 
             float travelTime = (totalPathDist / enemyPrefabs[i].GetComponent<Enemy>().Speed);
-            int maxEnemiesInGame = Mathf.RoundToInt((1 + spawnRate) * travelTime);
+            int maxEnemiesInGame = Mathf.RoundToInt((1 + SpawnRate) * travelTime);
 
             // Add 10 Extra enemies just in case 
             maxEnemiesInGame += 10;
