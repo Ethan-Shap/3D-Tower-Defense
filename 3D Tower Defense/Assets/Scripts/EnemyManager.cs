@@ -162,10 +162,15 @@ public class EnemyManager : MonoBehaviour {
         if (paths.Length == 0)
             throw new UnityException("No Paths to calculate distance from");
 
-        for(int i = 0; i < paths.Length; i++)
-            totalPathDist += paths[i].TotalDistance();
-        
-        totalPathDist /= paths.Length;
+        float longestDist = 0;
+        for (int i = 0; i < paths.Length; i++)
+        {
+            if(longestDist < paths[i].TotalDistance())
+            {
+                longestDist = paths[i].TotalDistance();
+            }
+        }
+        totalPathDist = longestDist;
 
         for (int i = 0; i < enemyPrefabs.Length; i++)
         {
@@ -175,8 +180,8 @@ public class EnemyManager : MonoBehaviour {
             newParent.transform.position = poolPos;
             poolParents[i] = newParent.transform;
 
-            float travelTime = (totalPathDist / enemyPrefabs[i].GetComponent<Enemy>().Speed);
-            int maxEnemiesInGame = Mathf.RoundToInt((1 + SpawnRate) * travelTime);
+            float travelTime = (totalPathDist / enemyPrefabs[i].GetComponent<Enemy>().Speed + totalPathDist % enemyPrefabs[i].GetComponent<Enemy>().Speed);
+            int maxEnemiesInGame = Mathf.RoundToInt(travelTime / (1 + SpawnRate));
 
             // Add 10 Extra enemies just in case 
             maxEnemiesInGame += 10;

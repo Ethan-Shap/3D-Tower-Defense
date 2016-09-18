@@ -30,21 +30,29 @@ public class ProjectileLauncher : MonoBehaviour {
 
     private void Update()
     {
-        if (Time.time >= nextShootTime && tower.GetCurrentEnemy())
+        if (!launcherAnimator)
         {
-            nextShootTime = Time.time + fireRate;
-            ShootProjectile();
-            if (rotateLaunchPos)
+            if (Time.time >= nextShootTime && tower.GetCurrentEnemy())
+            {
+                nextShootTime = Time.time + fireRate;
+                ShootProjectile();
+            }
+        }
+        else
+        {
+            if (Time.time >= nextShootTime && tower.GetCurrentEnemy())
+            {
+                nextShootTime = Time.time + fireRate;
+                launcherAnimator.SetBool("shoot", true);
+                ShootProjectile();
+            } else if (tower.GetCurrentEnemy())
             {
                 PointAtEnemy();
-                if (launcherAnimator)
-                {
-                    launcherAnimator.SetBool("shoot", true);
-                }
+                launcherAnimator.SetBool("shoot", true);
+            } else
+            {
+                launcherAnimator.SetBool("shoot", false);
             }
-        } else if (launcherAnimator && !tower.GetCurrentEnemy())
-        {
-            launcherAnimator.SetBool("shoot", false);
         }
     }
 
@@ -60,7 +68,7 @@ public class ProjectileLauncher : MonoBehaviour {
     {
         Vector3 dir = tower.GetCurrentEnemy().transform.position - launchPos.position;
         Quaternion lookRot = Quaternion.LookRotation(dir);
-        launchPos.transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, 10f);
+        launchPos.transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, 1f);
     }
 
 }
