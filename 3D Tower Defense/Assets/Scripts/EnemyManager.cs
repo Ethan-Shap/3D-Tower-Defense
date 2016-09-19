@@ -78,6 +78,7 @@ public class EnemyManager : MonoBehaviour {
         int numEnemyTypesToUse = round / gameManager.addNewEnemyAfterRounds + 1;
         Debug.Log("Number of enemies to use " + numEnemyTypesToUse);
         Debug.Log("Number of Enemies " + numEnemies);
+        Debug.Log(enemies[0].Count);
 
         StartCoroutine(MoveEnemies(round, numEnemies, numEnemyTypesToUse));
     }
@@ -85,6 +86,7 @@ public class EnemyManager : MonoBehaviour {
     private IEnumerator MoveEnemies(int round, int numEnemies, int numTypesToUse)
     {
         int typeToSpawn = 0;
+        float timeStarted = Time.time;
 
         for(int i = 0; i < numEnemies; i++)
         {
@@ -113,10 +115,12 @@ public class EnemyManager : MonoBehaviour {
             yield return new WaitForSeconds(SpawnRate);
         }
         while (activeEnemyParent.transform.childCount > 0)
-        { 
-            yield return new WaitForSeconds(0.25f);
+        {
+            yield return null;
         }
-        
+
+        Debug.Log(Time.time - timeStarted);
+
         gameManager.EndRound();
    }
 
@@ -172,19 +176,24 @@ public class EnemyManager : MonoBehaviour {
         }
         totalPathDist = longestDist;
 
+        Debug.Log("Spawn Rate " + SpawnRate);
+        Debug.Log("Total Distance " + totalPathDist);
+
         for (int i = 0; i < enemyPrefabs.Length; i++)
         {
             poolPos += new Vector3(0, -100, 0);
 
-            GameObject newParent = new GameObject("PoolPos" + i);
+            GameObject newParent = new GameObject(enemyPrefabs[i].GetComponent<Enemy>().type.ToString() + i);
             newParent.transform.position = poolPos;
             poolParents[i] = newParent.transform;
 
-            float travelTime = (totalPathDist / enemyPrefabs[i].GetComponent<Enemy>().Speed + totalPathDist % enemyPrefabs[i].GetComponent<Enemy>().Speed);
-            int maxEnemiesInGame = Mathf.RoundToInt(travelTime / (1 + SpawnRate));
+            float travelTime = (totalPathDist / (enemyPrefabs[i].GetComponent<Enemy>().Speed));
+            Debug.Log("Travel time " + travelTime);
+            Debug.Log("max enemies in game " + (travelTime / SpawnRate));
+            int maxEnemiesInGame = Mathf.RoundToInt(travelTime / spawnRate);
 
-            // Add 10 Extra enemies just in case 
-            maxEnemiesInGame += 10;
+            // Add 5 Extra enemies just in case 
+            maxEnemiesInGame += 5;
 
             for(int j = 0; j <= maxEnemiesInGame; j++)
             {

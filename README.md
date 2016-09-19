@@ -21,19 +21,26 @@ Defend your base from enemy spheres. Place down towers in strategic positions, a
 # Levels
     - Start with 100 credits
     - Rounds
-        1-3: Only White enemies
-        4: Introduce Red enemies
-        5-8: Red and White Enemies
-        9: Introduce Blue Enemies
-        10-14: White, Red, & Blue enemies
+        1-4: Only White enemies
+        5: Introduce Red enemies
+        6-9: Red and White Enemies
+        10: Introduce Blue Enemies
+        11-14: White, Red, & Blue enemies
         15: Introduce Grey enemies
         15-19: White Red, Blue, & Grey Enemies
         20: All other enemies come in, and Boss (Black) comes in at the very end
     - Each Round there is an increasing amount of money earned (100, 125, 150, etc.)
 
+# How Enemies are Spawned
+Calculate the Maximum number of enemies based on move speed, spawn rate, and distance of the level
+Instantiate the enemies, & Pool based on type
+Move the enemies to spawner when needed to spawn, and move back to pool position if killed or makes it to the end-
+
+
 # Future Updates 
     - More Enemies
     - More Towers
     - Customizer (Create custom Towers, and levels)
-        
+
+
         

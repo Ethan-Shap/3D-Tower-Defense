@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour {
     public EnemyManager.EnemyType type;
 
     public Path currentPath;
+    public bool timing = false;
 
     [SerializeField]
     private float speed;
@@ -37,6 +38,7 @@ public class Enemy : MonoBehaviour {
     {
         transform.position = Vector3.MoveTowards(transform.position, currentPath.GetWaypointPosition(currentWaypoint).position, speed * Time.deltaTime);
 
+        //Debug.Log(speed * Time.deltaTime);
         if (currentPath.WithinDistance(transform.position, currentWaypoint))
         {
             currentWaypoint = currentPath.NextWaypoint(currentWaypoint);
