@@ -106,9 +106,9 @@ public class EnemyManager : MonoBehaviour {
             if (enemies[typeToSpawn].Count == 0)
                 CreateExtraEnemies();
 
+            enemies[typeToSpawn][0].gameObject.SetActive(true);
             enemies[typeToSpawn][0].transform.position = transform.position;
             enemies[typeToSpawn][0].GetComponent<Enemy>().currentPath = paths[paths.Length >= 2 ? i % paths.Length : 0];
-            enemies[typeToSpawn][0].gameObject.SetActive(true);
             enemies[typeToSpawn][0].SetParent(activeEnemyParent.transform);
             enemies[typeToSpawn].RemoveAt(0);
 
@@ -199,6 +199,7 @@ public class EnemyManager : MonoBehaviour {
             {
                 GameObject newEnemy = Instantiate(enemyPrefabs[i], poolPos, Quaternion.identity) as GameObject;
                 newEnemy.transform.SetParent(poolParents[i]);
+                newEnemy.SetActive(false);
                 enemies[i].Add(newEnemy.transform);
             }
         }

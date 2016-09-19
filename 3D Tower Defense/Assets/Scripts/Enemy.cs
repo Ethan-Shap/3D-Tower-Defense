@@ -38,7 +38,6 @@ public class Enemy : MonoBehaviour {
     {
         transform.position = Vector3.MoveTowards(transform.position, currentPath.GetWaypointPosition(currentWaypoint).position, speed * Time.deltaTime);
 
-        //Debug.Log(speed * Time.deltaTime);
         if (currentPath.WithinDistance(transform.position, currentWaypoint))
         {
             currentWaypoint = currentPath.NextWaypoint(currentWaypoint);
@@ -46,6 +45,7 @@ public class Enemy : MonoBehaviour {
 
         if (currentWaypoint < 0)
         {
+            currentWaypoint = 0;
             currentPath = null;
             EnemyManager.instance.ResetPosition(this);
         }
