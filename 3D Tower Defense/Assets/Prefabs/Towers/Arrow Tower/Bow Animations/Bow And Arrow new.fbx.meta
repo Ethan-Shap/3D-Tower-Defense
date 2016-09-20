@@ -1,0 +1,168 @@
+fileFormatVersion: 2
+guid: a92b8d58a8f2939478aed3bddb671551
+timeCreated: 1474331719
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Bone
+    100004: Bone.001
+    100006: Bone.002
+    100008: Bone.003
+    100010: Bone.004
+    100012: Bone.005
+    100014: Bone.006
+    100016: Bone.007
+    100018: Bone.008
+    100020: Bone.008_end
+    100022: Bone.009
+    100024: Bone.010
+    100026: Bone.011
+    100028: Bone.012
+    100030: Bone.013
+    100032: Bone.014
+    100034: Bone.015
+    100036: Bone.016
+    100038: Bone.017
+    100040: Bone.017_end
+    100042: bottom_ik
+    100044: bottom_ik_end
+    100046: bottom_limit
+    100048: bottom_limit_end
+    100050: Bow
+    100052: //RootNode
+    100054: Camera
+    100056: Cone
+    100058: Cylinder
+    100060: Cylinder.002
+    100062: Lamp
+    100064: Main
+    100066: String
+    100068: String_end
+    100070: top_ik
+    100072: top_ik.001
+    100074: top_ik.002
+    100076: top_ik_end
+    100078: top_limit
+    100080: top_limit_end
+    400000: Armature
+    400002: Bone
+    400004: Bone.001
+    400006: Bone.002
+    400008: Bone.003
+    400010: Bone.004
+    400012: Bone.005
+    400014: Bone.006
+    400016: Bone.007
+    400018: Bone.008
+    400020: Bone.008_end
+    400022: Bone.009
+    400024: Bone.010
+    400026: Bone.011
+    400028: Bone.012
+    400030: Bone.013
+    400032: Bone.014
+    400034: Bone.015
+    400036: Bone.016
+    400038: Bone.017
+    400040: Bone.017_end
+    400042: bottom_ik
+    400044: bottom_ik_end
+    400046: bottom_limit
+    400048: bottom_limit_end
+    400050: Bow
+    400052: //RootNode
+    400054: Camera
+    400056: Cone
+    400058: Cylinder
+    400060: Cylinder.002
+    400062: Lamp
+    400064: Main
+    400066: String
+    400068: String_end
+    400070: top_ik
+    400072: top_ik.001
+    400074: top_ik.002
+    400076: top_ik_end
+    400078: top_limit
+    400080: top_limit_end
+    2300000: Cone
+    2300002: Cylinder
+    2300004: Cylinder.002
+    3300000: Cone
+    3300002: Cylinder
+    3300004: Cylinder.002
+    4300000: Bow
+    4300002: Cylinder.002
+    4300004: Cone
+    4300006: Cylinder
+    7400000: Armature|ArmatureAction
+    7400002: Armature|ArmatureAction.001
+    7400004: Armature|Bow Idle
+    9500000: //RootNode
+    13700000: Bow
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

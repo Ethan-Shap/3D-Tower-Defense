@@ -14,8 +14,6 @@ public class ProjectileLauncher : MonoBehaviour {
 
     private Tower tower;
     private float nextShootTime;
-    private Animator launcherAnimator;
-    public float animOffset = 1;
 
 	private void Awake()
 	{
@@ -25,40 +23,19 @@ public class ProjectileLauncher : MonoBehaviour {
             throw new System.NullReferenceException("No projectile for " + name + " to shoot");
 
         tower = GetComponent<Tower>();
-        launcherAnimator = launchPos.gameObject.GetComponent<Animator>();
 	}
 
     private void Update()
     {
-        if (!launcherAnimator)
+        if (Time.time >= nextShootTime && tower.GetCurrentEnemy())
         {
-            if (Time.time >= nextShootTime && tower.GetCurrentEnemy())
-            {
-                nextShootTime = Time.time + fireRate;
-                ShootProjectile();
-            }
-        }
-        else
-        {
-            if (Time.time >= nextShootTime && tower.GetCurrentEnemy())
-            {
-                nextShootTime = Time.time + fireRate;
-                launcherAnimator.SetBool("shoot", true);
-                ShootProjectile();
-            } else if (tower.GetCurrentEnemy())
-            {
-                PointAtEnemy();
-                launcherAnimator.SetBool("shoot", true);
-            } else
-            {
-                launcherAnimator.SetBool("shoot", false);
-            }
+            nextShootTime = Time.time + fireRate;
+            ShootProjectile();
         }
     }
 
     private void ShootProjectile()
     {
-        Debug.DrawRay(launchPos.position, tower.GetCurrentEnemy().transform.position);
         GameObject newProjectile = Instantiate(projectilePrefab, launchPos.position, Quaternion.identity) as GameObject;
         Enemy currentEnemy = tower.GetCurrentEnemy();
         newProjectile.AddComponent<Projectile>().SetProjectileVars(currentEnemy.transform, projectileSpeed);

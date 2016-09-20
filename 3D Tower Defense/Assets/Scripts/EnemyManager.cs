@@ -26,6 +26,7 @@ public class EnemyManager : MonoBehaviour {
     private Transform[] poolParents;
     private Transform activeEnemyParent;
     private GameManager gameManager;
+    private Transform ALL_ENEMY_PARENT;
 
     private Path[] paths;
 
@@ -51,6 +52,7 @@ public class EnemyManager : MonoBehaviour {
     {
         gameManager = GameManager.instance;
         SpawnRate = Random.Range(spawnRateMin, spawnRateMax);
+        ALL_ENEMY_PARENT = new GameObject("ENEMIES").transform;
 
         if (gameManager.numRounds % enemyPrefabs.Length != 0)
         {
@@ -185,6 +187,7 @@ public class EnemyManager : MonoBehaviour {
 
             GameObject newParent = new GameObject(enemyPrefabs[i].GetComponent<Enemy>().type.ToString() + i);
             newParent.transform.position = poolPos;
+            newParent.transform.SetParent(ALL_ENEMY_PARENT);
             poolParents[i] = newParent.transform;
 
             float travelTime = (totalPathDist / (enemyPrefabs[i].GetComponent<Enemy>().Speed));

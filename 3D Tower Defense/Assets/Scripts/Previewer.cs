@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 public class Previewer : MonoBehaviour {
 
@@ -61,7 +62,7 @@ public class Previewer : MonoBehaviour {
         {
             Overlapping = OverlappingTowers();
             shop.UpdateButtons();
-            if (Input.touchCount == 1)
+            if (Input.touchCount == 1 && !IsPointerOverUIObject())
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.GetTouch(0).position);
 
@@ -81,10 +82,29 @@ public class Previewer : MonoBehaviour {
         }
     }
 
+    private bool IsPointerOverUIObject()
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = Input.GetTouch(0).position;
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        foreach(RaycastResult result in results)
+        {
+            Debug.Log(result.gameObject.name);
+        }
+
+        return results.Count > 0;
+    }
+
     public void ExitPreview()
     {
-        Destroy(gameManager.selectedTower);
-        gameManager.selectedTower = null;
+        if (gameManager.selectedTower != null)
+        {
+            Destroy(gameManager.selectedTower);
+            gameManager.selectedTower = null;
+        }
+        shop.CancelItemPurchase();
         Previewing = false;
     }
 

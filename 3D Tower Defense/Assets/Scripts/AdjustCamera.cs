@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class AdjustCamera : MonoBehaviour {
+public class TouchInput : MonoBehaviour {
 
     public float rotSpeed = 1.5f;
     public float zoomSpeed = 0.25f;
@@ -22,6 +22,8 @@ public class AdjustCamera : MonoBehaviour {
     private Vector2 prevPos;
     private float minXRot = 3, maxXRot = 45;
     private Previewer previewer;
+
+    private bool collidedWithTouchInput;
 
     // Use this for initialization
     void Start ()
