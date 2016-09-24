@@ -11,7 +11,10 @@ public class Health : MonoBehaviour {
         health -= damage;
         if(health <= 0)
         {
-            Destroy(gameObject);
+            if(gameObject.tag == "Enemy")
+            {
+                EnemyManager.instance.ResetPosition(this.gameObject.GetComponent<Enemy>());
+            }
         }
     }
 

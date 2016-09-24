@@ -59,7 +59,7 @@ public class TouchInput : MonoBehaviour {
         } else
         {
             // Camera Movement if there's a tower being previewed
-            if(Input.touchCount == 2)
+            if (Input.touchCount == 2)
             {
                 Rotate();
                 cameraParent.transform.eulerAngles = new Vector3(cameraParent.transform.eulerAngles.x, cameraParent.transform.eulerAngles.y, 0);

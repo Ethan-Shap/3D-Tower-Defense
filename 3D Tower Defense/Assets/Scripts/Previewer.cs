@@ -69,7 +69,7 @@ public class Previewer : MonoBehaviour {
                 float rayLength = 0f;
                 if (myPlane.Raycast(ray, out rayLength))
                 {
-                    Debug.Log("Plane Raycast hit at distance: " + rayLength);
+                    //Debug.Log("Plane Raycast hit at distance: " + rayLength);
                     Vector3 hitPoint = ray.GetPoint(rayLength);
 
                     MovePreview(hitPoint);
@@ -94,7 +94,7 @@ public class Previewer : MonoBehaviour {
             Debug.Log(result.gameObject.name);
         }
 
-        return results.Count > 0;
+        return results.Count > 1;
     }
 
     public void ExitPreview()
@@ -104,7 +104,6 @@ public class Previewer : MonoBehaviour {
             Destroy(gameManager.selectedTower);
             gameManager.selectedTower = null;
         }
-        shop.CancelItemPurchase();
         Previewing = false;
     }
 

@@ -53,10 +53,11 @@ public class Shop : MonoBehaviour {
     public void CancelItemPurchase()
     {
         // Exits preview if the current item is a tower
-        if (currentItem.item.GetComponent<Tower>())
+        if (previewer.Previewing)
         {
             previewer.ExitPreview();
         }
+
         cancelPurchaseButton.SetActive(false);
         comfirmPurchaseButton.SetActive(false);
     }

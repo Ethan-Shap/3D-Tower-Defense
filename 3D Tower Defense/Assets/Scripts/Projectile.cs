@@ -7,11 +7,18 @@ public class Projectile : MonoBehaviour {
     private float speed;
     [SerializeField]
     private int damage;
+    private ProjectileLauncher parentLauncher;
 
     private void Update()
     {
-        if (target)
+        if (target && target.gameObject.activeInHierarchy)
             MoveTowardsTarget();
+        else
+        {
+            target = parentLauncher.ClosestEnemy();
+            if (!target)
+                Destroy(gameObject);
+        }    
     }
 
     private void MoveTowardsTarget()
@@ -20,13 +27,15 @@ public class Projectile : MonoBehaviour {
         transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * speed);
     }
 
-    public void SetProjectileVars(Transform target, float speed)
+    public void SetProjectileVars(Transform target, float speed, int damage, ProjectileLauncher parent)
     {
         this.target = target;
         this.speed = speed;
+        this.damage = damage;
+        this.parentLauncher = parent;
     }
 
-    private void OnTriggerStay(Collider col)
+    private void OnTriggerEnter(Collider col)
     {
         if(col.tag == "Enemy")
         {
@@ -34,7 +43,6 @@ public class Projectile : MonoBehaviour {
             {
                 col.GetComponent<Health>().TakeDamage(damage);
             }
-
             Destroy(gameObject);
         }
     }

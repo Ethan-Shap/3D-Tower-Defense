@@ -14,6 +14,7 @@ public class ProjectileLauncher : MonoBehaviour {
 
     private Tower tower;
     private float nextShootTime;
+    private int damage;
 
 	private void Awake()
 	{
@@ -23,6 +24,7 @@ public class ProjectileLauncher : MonoBehaviour {
             throw new System.NullReferenceException("No projectile for " + name + " to shoot");
 
         tower = GetComponent<Tower>();
+        damage = tower.damage;
 	}
 
     private void Update()
@@ -31,6 +33,8 @@ public class ProjectileLauncher : MonoBehaviour {
         {
             nextShootTime = Time.time + fireRate;
             ShootProjectile();
+            if (rotateLaunchPos)
+                PointAtEnemy();
         }
     }
 
@@ -38,7 +42,7 @@ public class ProjectileLauncher : MonoBehaviour {
     {
         GameObject newProjectile = Instantiate(projectilePrefab, launchPos.position, Quaternion.identity) as GameObject;
         Enemy currentEnemy = tower.GetCurrentEnemy();
-        newProjectile.AddComponent<Projectile>().SetProjectileVars(currentEnemy.transform, projectileSpeed);
+        newProjectile.AddComponent<Projectile>().SetProjectileVars(currentEnemy.transform, projectileSpeed, damage, this);
     }
 
     private void PointAtEnemy()
@@ -46,6 +50,16 @@ public class ProjectileLauncher : MonoBehaviour {
         Vector3 dir = tower.GetCurrentEnemy().transform.position - launchPos.position;
         Quaternion lookRot = Quaternion.LookRotation(dir);
         launchPos.transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, 1f);
+    }
+
+    public Transform ClosestEnemy()
+    {
+        if (tower.GetCurrentEnemy())
+            return tower.GetCurrentEnemy().transform;
+        else if (tower.GetClosestEnemy())
+            return tower.GetClosestEnemy().transform;
+        else
+            return null;
     }
 
 }
