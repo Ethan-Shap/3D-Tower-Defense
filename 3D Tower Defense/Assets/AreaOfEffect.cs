@@ -32,7 +32,7 @@ public class AreaOfEffect : MonoBehaviour {
     {
         Vector3 dir = tower.GetCurrentEnemy().transform.position - partToRotate.position;
         Quaternion lookRot = Quaternion.LookRotation(dir);
-        partToRotate.transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, rotSpeed);
+        partToRotate.transform.rotation = Quaternion.Lerp(partToRotate.transform.rotation, lookRot, rotSpeed * Time.deltaTime);
     }
 
 }

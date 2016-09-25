@@ -8,17 +8,21 @@ public class Projectile : MonoBehaviour {
     [SerializeField]
     private int damage;
     private ProjectileLauncher parentLauncher;
+    private bool initialized = false;
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (target && target.gameObject.activeInHierarchy)
-            MoveTowardsTarget();
-        else
-        {
-            target = parentLauncher.ClosestEnemy();
-            if (!target)
-                Destroy(gameObject);
-        }    
+        if (initialized)
+        { 
+            if (target && target.gameObject.activeInHierarchy)
+                    MoveTowardsTarget();
+            else
+            {
+                target = parentLauncher.ClosestEnemy();
+                if (!target)
+                    Destroy(gameObject);
+            }
+        }
     }
 
     private void MoveTowardsTarget()
@@ -33,6 +37,7 @@ public class Projectile : MonoBehaviour {
         this.speed = speed;
         this.damage = damage;
         this.parentLauncher = parent;
+        initialized = true;
     }
 
     private void OnTriggerEnter(Collider col)

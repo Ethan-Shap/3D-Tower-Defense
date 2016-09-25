@@ -14,10 +14,12 @@ public class EnemyManager : MonoBehaviour {
     [Tooltip("Put enemies in order of difficulty")]
     public GameObject[] enemyPrefabs;
     public float enemyMultiplier = 20f;
+    public Transform spawnPos; 
 
     private float spawnRate;
     private float spawnRateMin = 0.7f;
     private float spawnRateMax = 1f;
+    private bool canSpawn = false;
 
     private int[] enemySpawnPattern;
     private int maxNumberOfEnemies;
@@ -54,12 +56,12 @@ public class EnemyManager : MonoBehaviour {
         SpawnRate = Random.Range(spawnRateMin, spawnRateMax);
         ALL_ENEMY_PARENT = new GameObject("ENEMIES").transform;
 
-        if (gameManager.numRounds % enemyPrefabs.Length != 0)
+        if (gameManager.NumRounds % enemyPrefabs.Length != 0)
         {
-            gameManager.numRounds += enemyPrefabs.Length - (gameManager.numRounds % enemyPrefabs.Length);
+            gameManager.NumRounds += enemyPrefabs.Length - (gameManager.NumRounds % enemyPrefabs.Length);
         }
 
-        gameManager.addNewEnemyAfterRounds = (gameManager.numRounds / enemyPrefabs.Length);
+        gameManager.addNewEnemyAfterRounds = (gameManager.NumRounds / enemyPrefabs.Length);
 
         poolParents = new Transform[enemyPrefabs.Length];
         enemies = new List<Transform>[enemyPrefabs.Length];
@@ -97,34 +99,63 @@ public class EnemyManager : MonoBehaviour {
                 typeToSpawn = RandomNewEnemyType(typeToSpawn, numTypesToUse);
                 Debug.Log("Type to spawn " + typeToSpawn);
             }
-
-            //Debug.Log(typeToSpawn);
-            //Debug.Log(numUsed[typeToSpawn]);
-            //Debug.Log(enemies.Count);
-            //Debug.Log(enemies[numUsed[typeToSpawn]]);
-
             //Debug.Log(i);
 
             if (enemies[typeToSpawn].Count == 0)
                 CreateExtraEnemies();
 
             enemies[typeToSpawn][0].gameObject.SetActive(true);
-            enemies[typeToSpawn][0].transform.position = transform.position;
+            enemies[typeToSpawn][0].transform.position = spawnPos.position;
             enemies[typeToSpawn][0].GetComponent<Enemy>().currentPath = paths[paths.Length >= 2 ? i % paths.Length : 0];
             enemies[typeToSpawn][0].SetParent(activeEnemyParent.transform);
             enemies[typeToSpawn].RemoveAt(0);
 
             yield return new WaitForSeconds(SpawnRate);
+            while (!canSpawn)
+            {
+                yield return null;
+            }
         }
         while (activeEnemyParent.transform.childCount > 0)
         {
             yield return null;
         }
 
-        Debug.Log(Time.time - timeStarted);
+        //Debug.Log(Time.time - timeStarted);
 
         gameManager.EndRound();
    }
+
+    public void Pause()
+    {
+        canSpawn = false;
+
+        PauseEnemies();
+    }
+
+    private void PauseEnemies()
+    {
+        Enemy[] activeEnemies = GetActiveEnemies();
+        foreach (Enemy enemy in activeEnemies)
+        {
+            enemy.Speed = 0;
+        }
+    }
+
+    public void Unpause()
+    {
+        canSpawn = true;
+        UnpauseEnemies();
+    }
+
+    private void UnpauseEnemies()
+    {
+        Enemy[] activeEnemies = GetActiveEnemies();
+        foreach (Enemy enemy in activeEnemies)
+        {
+            enemy.Speed = enemy.DefaultSpeed;
+        }
+    }
 
     private void CreateExtraEnemies()
     {

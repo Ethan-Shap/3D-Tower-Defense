@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour {
 
     [SerializeField]
     private float speed;
+    private float defaultSpeed;
     private int currentWaypoint = 0;
 
     public float Speed
@@ -24,7 +25,25 @@ public class Enemy : MonoBehaviour {
             speed = value;
         }
     }
-	
+
+    public float DefaultSpeed
+    {
+        get
+        {
+            return defaultSpeed;
+        }
+
+        set
+        {
+            defaultSpeed = value;
+        }
+    }
+
+    private void Start()
+    {
+        DefaultSpeed = Speed;
+    }
+
 	// Update is called once per frame
 	void Update ()
     {
@@ -36,18 +55,21 @@ public class Enemy : MonoBehaviour {
 
     private void MoveTowardsWaypoint()
     {
-        transform.position = Vector3.MoveTowards(transform.position, currentPath.GetWaypointPosition(currentWaypoint).position, speed * Time.deltaTime);
-
-        if (currentPath.WithinDistance(transform.position, currentWaypoint))
+        if ((int)speed > 0)
         {
-            currentWaypoint = currentPath.NextWaypoint(currentWaypoint);
-        }
+            transform.position = Vector3.MoveTowards(transform.position, currentPath.GetWaypointPosition(currentWaypoint).position, speed * Time.deltaTime);
 
-        if (currentWaypoint < 0)
-        {
-            currentWaypoint = 0;
-            currentPath = null;
-            EnemyManager.instance.ResetPosition(this);
+            if (currentPath.WithinDistance(transform.position, currentWaypoint))
+            {
+                currentWaypoint = currentPath.NextWaypoint(currentWaypoint);
+            }
+
+            if (currentWaypoint < 0)
+            {
+                currentWaypoint = 0;
+                currentPath = null;
+                EnemyManager.instance.ResetPosition(this);
+            }
         }
     }
 

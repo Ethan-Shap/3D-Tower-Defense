@@ -3,20 +3,47 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
-    public GameObject selectedTower = null;
     public static GameManager instance;
 
+    public GameObject selectedTower = null;
     [SerializeField]
-    public int numRounds = 20;
+    private int numRounds = 20;
+    public int NumRounds
+    {
+        get
+        {
+            return numRounds;
+        }
+
+        set
+        {
+            numRounds = value;
+        }
+    }
     [SerializeField]
-    public int round = 1;
+    private int round = 1;
+    public int Round
+    {
+        get
+        {
+            return round;
+        }
+
+        set
+        {
+            round = value;
+        }
+    }
+
     public int addNewEnemyAfterRounds = 5;
     public float waitTime = 10f;
     public GameObject startRoundButton;
+    public GameObject pauseGameButton;
 
     private Player p;
     private EnemyManager enemyManager;
-
+    private MenuManager menuManager;
+    private bool roundStarted = false;
     public bool RoundStarted
     {
         get
@@ -30,11 +57,10 @@ public class GameManager : MonoBehaviour {
             roundStarted = value;
         }
     }
-    private bool roundStarted = false;
 
     private void Awake()
     {
-        Debug.Log("Total Rounds " + numRounds);
+        Debug.Log("Total Rounds " + NumRounds);
         instance = this;
     }
 
@@ -51,12 +77,22 @@ public class GameManager : MonoBehaviour {
         
 	}
 
+    public void PauseRound()
+    {
+        enemyManager.Pause();
+    }
+
+    public void ResumeRound()
+    {
+        enemyManager.Unpause();
+    }
+
     public void StartRound()
     {
         if (!RoundStarted)
         {
-            Debug.Log("Round " + round);
-            enemyManager.SpawnEnemies(round);
+            Debug.Log("Round " + Round);
+            enemyManager.SpawnEnemies(Round);
             RoundStarted = true;
         }
     }
@@ -64,7 +100,7 @@ public class GameManager : MonoBehaviour {
     public void EndRound()
     {
         RoundStarted = false;
-        round++;
+        Round++;
     }
 
 #if DEBUG

@@ -33,9 +33,10 @@ public class ProjectileLauncher : MonoBehaviour {
         {
             nextShootTime = Time.time + fireRate;
             ShootProjectile();
-            if (rotateLaunchPos)
-                PointAtEnemy();
         }
+
+        if (rotateLaunchPos && tower.GetCurrentEnemy())
+            PointAtEnemy();
     }
 
     private void ShootProjectile()
@@ -47,9 +48,10 @@ public class ProjectileLauncher : MonoBehaviour {
 
     private void PointAtEnemy()
     {
+        Debug.Log("Hello");
         Vector3 dir = tower.GetCurrentEnemy().transform.position - launchPos.position;
         Quaternion lookRot = Quaternion.LookRotation(dir);
-        launchPos.transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, 1f);
+        launchPos.transform.rotation = Quaternion.Lerp(launchPos.transform.rotation, lookRot, 5f * Time.deltaTime);
     }
 
     public Transform ClosestEnemy()
