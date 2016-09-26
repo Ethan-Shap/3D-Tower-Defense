@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour {
     {
         p = Player.instance;
         enemyManager = EnemyManager.instance;
+        menuManager = GetComponent<MenuManager>();
 	}
 	
 	// Update is called once per frame
@@ -80,11 +81,13 @@ public class GameManager : MonoBehaviour {
     public void PauseRound()
     {
         enemyManager.Pause();
+        menuManager.OpenScreen(0);
     }
 
     public void ResumeRound()
     {
         enemyManager.Unpause();
+        menuManager.CloseScreen(0);
     }
 
     public void StartRound()

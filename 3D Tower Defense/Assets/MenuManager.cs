@@ -34,4 +34,12 @@ public class MenuManager : MonoBehaviour {
             }
         }
     }
+
+    public void CloseScreen(int screenIndex)
+    {
+        if (screenIndex >= 0 && screenIndex < screens.Length)
+        {
+            screens[screenIndex].gameObject.SetActive(false);
+        }
+    }
 }

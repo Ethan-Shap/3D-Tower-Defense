@@ -8,7 +8,7 @@ public class Shop : MonoBehaviour {
     public GameObject cancelPurchaseButton;
     public GameObject comfirmPurchaseButton;
 
-    private Previewer previewer;
+    private TowerManager tpwerManager;
     private Player player;
     private GameManager gameManager;
     private ShopItem currentItem;
