@@ -5,7 +5,6 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
 
-    public GameObject selectedTower = null;
     [SerializeField]
     private int numRounds = 20;
     public int NumRounds
@@ -43,6 +42,7 @@ public class GameManager : MonoBehaviour {
     private Player p;
     private EnemyManager enemyManager;
     private MenuManager menuManager;
+    private TowerManager towerManager;
     private bool roundStarted = false;
     public bool RoundStarted
     {
@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour {
         p = Player.instance;
         enemyManager = EnemyManager.instance;
         menuManager = GetComponent<MenuManager>();
+        towerManager = TowerManager.instance;
 	}
 	
 	// Update is called once per frame
@@ -82,12 +83,14 @@ public class GameManager : MonoBehaviour {
     {
         enemyManager.Pause();
         menuManager.OpenScreen(0);
+        towerManager.PauseTowers();
     }
 
     public void ResumeRound()
     {
         enemyManager.Unpause();
         menuManager.CloseScreen(0);
+        towerManager.UnpauseTowers();
     }
 
     public void StartRound()
@@ -130,8 +133,6 @@ public class GameManager : MonoBehaviour {
                 enemy.Speed = 5;
             }
         }
-            
-
     }
 #endif
 

@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class TouchInput : MonoBehaviour {
+
+    public enum ControlType { Regular, Previewing }
+    public static ControlType currentControl;
 
     public float rotSpeed = 1.5f;
     public float zoomSpeed = 0.25f;
@@ -44,7 +49,7 @@ public class TouchInput : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if (!previewer.Previewing)
+        if (currentControl == ControlType.Regular)
         {
             // Camera movment when there is no tower preview
             if (Input.touchCount == 1)
@@ -56,16 +61,34 @@ public class TouchInput : MonoBehaviour {
             {
                 Zoom();
             }
-        } else
+        } else if (currentControl == ControlType.Previewing)
         {
             // Camera Movement if there's a tower being previewed
-            if (Input.touchCount == 2)
+            if (Input.touchCount == 1 && !IsPointerOverUIObject())
+            {
+                previewer.MovePreview(Input.GetTouch(0).position);
+            } else if (Input.touchCount == 2)
             {
                 Rotate();
                 cameraParent.transform.eulerAngles = new Vector3(cameraParent.transform.eulerAngles.x, cameraParent.transform.eulerAngles.y, 0);
             }
         }
 	}
+
+    private bool IsPointerOverUIObject()
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = Input.GetTouch(0).position;
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        foreach (RaycastResult result in results)
+        {
+            Debug.Log(result.gameObject.name);
+        }
+
+        return results.Count > 1;
+    }
 
     private void Zoom()
     {

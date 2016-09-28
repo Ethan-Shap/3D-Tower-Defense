@@ -8,8 +8,9 @@ public class Shop : MonoBehaviour {
     public GameObject cancelPurchaseButton;
     public GameObject comfirmPurchaseButton;
 
-    private TowerManager tpwerManager;
+    private TowerManager towerManager;
     private Player player;
+    private Previewer previewer;
     private GameManager gameManager;
     private ShopItem currentItem;
 
@@ -21,8 +22,9 @@ public class Shop : MonoBehaviour {
     private void Start()
     {
         player = Player.instance;
-        previewer = Previewer.instance;
         gameManager = GameManager.instance;
+        towerManager = TowerManager.instance;
+        previewer = Previewer.instance;
         cancelPurchaseButton.SetActive(false);
         comfirmPurchaseButton.SetActive(false);
     }
@@ -40,11 +42,21 @@ public class Shop : MonoBehaviour {
         cancelPurchaseButton.SetActive(true);
         comfirmPurchaseButton.SetActive(true);
 
-        currentItem = itemToBuy;
-
         // If the current item is a tower, show preview
-        if(currentItem.item.GetComponent<Tower>())
-            previewer.PreviewTower(itemToBuy.item);
+        if (itemToBuy.item.GetComponent<Tower>() && currentItem == itemToBuy)
+        {
+            Destroy(towerManager.selectedTower.gameObject);
+            CancelItemPurchase();
+            currentItem = null;
+        }
+        else if (itemToBuy.item.GetComponent<Tower>()) //TODO Make it so it checks if the current tower is placed already and if it is then create a new tower
+        {
+            towerManager.BuildTower(itemToBuy.item);
+            currentItem = itemToBuy;
+        } else
+        {
+            currentItem = itemToBuy;  
+        }
     }
 
     /// <summary>
@@ -53,11 +65,12 @@ public class Shop : MonoBehaviour {
     public void CancelItemPurchase()
     {
         // Exits preview if the current item is a tower
-        if (previewer.Previewing)
+        if (currentItem.item.GetComponent<Tower>())
         {
-            previewer.ExitPreview();
+            towerManager.DestroyTower(towerManager.selectedTower.gameObject);
         }
 
+        currentItem = null;
         cancelPurchaseButton.SetActive(false);
         comfirmPurchaseButton.SetActive(false);
     }
@@ -70,8 +83,8 @@ public class Shop : MonoBehaviour {
             {
                 cancelPurchaseButton.SetActive(false);
                 comfirmPurchaseButton.SetActive(false);
-                previewer.Previewing = false;
-                gameManager.selectedTower.GetComponent<Tower>().TriggerBuildAnimation();
+                towerManager.PlaceTower(towerManager.selectedTower.gameObject);
+                towerManager.selectedTower.GetComponent<Tower>().TriggerBuildAnimation();
                 player.Coins += -currentItem.cost;
             }
             else if (!currentItem.item.GetComponent<Tower>())

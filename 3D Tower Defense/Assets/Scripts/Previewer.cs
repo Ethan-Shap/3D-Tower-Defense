@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
 public class Previewer : MonoBehaviour {
 
@@ -13,6 +12,7 @@ public class Previewer : MonoBehaviour {
     private bool overlapping = false;
     private GameManager gameManager;
     private BuildManager buildManager;
+    private TowerManager towerManager;
     private Shop shop;
     private Plane myPlane;
 
@@ -51,93 +51,52 @@ public class Previewer : MonoBehaviour {
 
     private void Start()
     {
-        buildManager = BuildManager.instance;
-        gameManager = GameManager.instance;
-        shop = Shop.instance;
+        towerManager = TowerManager.instance;
     }
 
-    private void Update()
+    private void Preview(Tower tower)
     {
-        if (Previewing && gameManager.selectedTower != null)
-        {
-            Overlapping = OverlappingTowers();
-            shop.UpdateButtons();
-            if (Input.touchCount == 1 && !IsPointerOverUIObject())
-            {
-                Ray ray = mainCamera.ScreenPointToRay(Input.GetTouch(0).position);
-
-                float rayLength = 0f;
-                if (myPlane.Raycast(ray, out rayLength))
-                {
-                    //Debug.Log("Plane Raycast hit at distance: " + rayLength);
-                    Vector3 hitPoint = ray.GetPoint(rayLength);
-
-                    MovePreview(hitPoint);
-                }
-            }
-        } else if (gameManager.selectedTower != null)
-        {
-            ResetTowerMaterials(gameManager.selectedTower);
-            gameManager.selectedTower = null;
-        }
+        Overlapping = OverlappingTowers();
+        shop.UpdateButtons();
     }
 
-    private bool IsPointerOverUIObject()
+    public void ExitPreview(GameObject tower)
     {
-        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-        eventDataCurrentPosition.position = Input.GetTouch(0).position;
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-
-        foreach(RaycastResult result in results)
-        {
-            Debug.Log(result.gameObject.name);
-        }
-
-        return results.Count > 1;
-    }
-
-    public void ExitPreview()
-    {
-        if (gameManager.selectedTower != null)
-        {
-            Destroy(gameManager.selectedTower);
-            gameManager.selectedTower = null;
-        }
+        ResetTowerMaterials(tower);
         Previewing = false;
     }
 
     public void MovePreview(Vector3 pos)
     {
-        if(Previewing && gameManager.selectedTower)
+        Ray ray = mainCamera.ScreenPointToRay(pos);
+
+        float rayLength = 0f;
+        if (myPlane.Raycast(ray, out rayLength))
         {
-            gameManager.selectedTower.transform.position = pos;
-        }    
+            //Debug.Log("Plane Raycast hit at distance: " + rayLength);
+            Vector3 hitPoint = ray.GetPoint(rayLength);
+
+            towerManager.selectedTower.transform.position = hitPoint;
+        }
     }
 
     public void PreviewTower(GameObject tower)
     {
-        if (gameManager.selectedTower == null || gameManager.selectedTower.GetComponent<Tower>().title != tower.GetComponent<Tower>().title)
+        if (tower)
         {
-            Destroy(gameManager.selectedTower);
-            gameManager.selectedTower = buildManager.BuildTower(tower);
-            MakeTowerTransparent(gameManager.selectedTower);
-        } else if (gameManager.selectedTower.GetComponent<Tower>().title == tower.GetComponent<Tower>().title)
-        {
-            Destroy(gameManager.selectedTower);
-            Previewing = false;
-            gameManager.selectedTower = null;
+            MakeTowerTransparent(tower);
+            Previewing = true;
         }
-
-        Previewing = true;
+        else
+            Previewing = false;
     }
 
     private bool OverlappingTowers()
     {
-        Collider[] colliders = Physics.OverlapSphere(gameManager.selectedTower.transform.position, overlapRadius);
+        Collider[] colliders = Physics.OverlapSphere(towerManager.selectedTower.transform.position, overlapRadius);
         foreach(Collider col in colliders)
         {
-            if (col != gameManager.selectedTower.GetComponent<Collider>())
+            if (col != towerManager.selectedTower.GetComponent<Collider>())
             {
                 return true;
             }

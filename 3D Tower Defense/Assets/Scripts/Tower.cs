@@ -8,6 +8,7 @@ public class Tower : MonoBehaviour {
     public string title;
     public int damage;
     public float range;
+    public bool placed = false;
 
     private Animator animator;
 
