@@ -43,9 +43,8 @@ public class Shop : MonoBehaviour {
         comfirmPurchaseButton.SetActive(true);
 
         // If the current item is a tower, show preview
-        if (itemToBuy.item.GetComponent<Tower>() && currentItem == itemToBuy)
+        if (itemToBuy.item.GetComponent<Tower>() && currentItem == itemToBuy && !towerManager.selectedTower.purchased)
         {
-            Destroy(towerManager.selectedTower.gameObject);
             CancelItemPurchase();
             currentItem = null;
         }

@@ -17,6 +17,9 @@ public class ShopItem : MonoBehaviour {
             throw new System.NullReferenceException("No item for player to buy on shop item " + this.gameObject.name);
 
         shop = Shop.instance;
+        priceText = GetComponentInChildren<Text>();
+
+        priceText.text = cost.ToString();
 	}
 	
 	public void Clicked()

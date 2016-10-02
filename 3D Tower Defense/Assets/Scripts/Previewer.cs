@@ -15,6 +15,7 @@ public class Previewer : MonoBehaviour {
     private TowerManager towerManager;
     private Shop shop;
     private Plane myPlane;
+    private GameObject previewingTower = null;
 
     public bool Previewing
     {
@@ -52,12 +53,7 @@ public class Previewer : MonoBehaviour {
     private void Start()
     {
         towerManager = TowerManager.instance;
-    }
-
-    private void Preview(Tower tower)
-    {
-        Overlapping = OverlappingTowers();
-        shop.UpdateButtons();
+        shop = Shop.instance;
     }
 
     public void ExitPreview(GameObject tower)
@@ -86,6 +82,8 @@ public class Previewer : MonoBehaviour {
         {
             MakeTowerTransparent(tower);
             Previewing = true;
+            Overlapping = OverlappingTowers();
+            shop.UpdateButtons();
         }
         else
             Previewing = false;

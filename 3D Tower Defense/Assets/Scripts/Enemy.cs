@@ -68,9 +68,14 @@ public class Enemy : MonoBehaviour {
             {
                 currentWaypoint = 0;
                 currentPath = null;
+                Player.instance.Health -= Constants.damage;
                 EnemyManager.instance.ResetPosition(this);
             }
         }
     }
+}
 
+public static class Constants
+{
+    public static int damage = 1;
 }

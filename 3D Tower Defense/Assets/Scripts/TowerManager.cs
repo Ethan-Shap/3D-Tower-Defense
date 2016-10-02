@@ -6,7 +6,7 @@ public class TowerManager : MonoBehaviour {
     public static TowerManager instance;
     public Tower selectedTower;
 
-    public enum TowerType { ice_tower, fireball_tower, arrow_tower, fire_tower }
+    public enum TowerType { ice_tower_areaofeffect, fireball_tower_single, arrow_tower_single, fire_tower_areaofeffect }
 
     private Transform mainTowerParent;
     private Transform[] towerTypesParent;
@@ -35,7 +35,7 @@ public class TowerManager : MonoBehaviour {
     {
         if (selectedTower)
         {
-            if (!selectedTower.placed)
+            if (!selectedTower.purchased)
             {
                 snapToGrid.SnapSelectedTowerToGrid();
                 previewer.PreviewTower(selectedTower.gameObject);
@@ -61,10 +61,8 @@ public class TowerManager : MonoBehaviour {
     {
         foreach(Tower tower in towers)
         {
-            if (tower.GetComponentInChildren<ParticleSystem>())
-            {
-                tower.GetComponentInChildren<ParticleSystem>().Pause();
-            }
+            Debug.Log("Pause");
+            tower.Pause();
         }
     }
 
@@ -82,7 +80,8 @@ public class TowerManager : MonoBehaviour {
     public void PlaceTower(GameObject tower)
     {
         TouchInput.currentControl = TouchInput.ControlType.Regular;
-        selectedTower.placed = true;
+        selectedTower.purchased = true;
+        towers.Add(tower.GetComponent<Tower>());
         previewer.ExitPreview(tower);
     }
 

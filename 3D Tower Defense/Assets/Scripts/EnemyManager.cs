@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System.Collections;
 using System.Collections.Generic;
 
@@ -14,12 +17,13 @@ public class EnemyManager : MonoBehaviour {
     [Tooltip("Put enemies in order of difficulty")]
     public GameObject[] enemyPrefabs;
     public float enemyMultiplier = 20f;
-    public Transform spawnPos; 
+    public Transform spawnPos;
+    public bool showActiveEnemies = false;
 
     private float spawnRate;
     private float spawnRateMin = 0.7f;
     private float spawnRateMax = 1f;
-    private bool canSpawn = false;
+    private bool canSpawn = true;
 
     private int[] enemySpawnPattern;
     private int maxNumberOfEnemies;
@@ -75,6 +79,28 @@ public class EnemyManager : MonoBehaviour {
 
         CalculateAndInstantiateMaxEnemiesInGame();
     }
+
+#if UNITY_EDITOR
+    private void Update()
+    {
+        if (showActiveEnemies)
+        {
+            showActiveEnemies = false;
+            StartCoroutine(ShowActiveEnemiesInHierarchy());
+        }
+    }
+
+    private IEnumerator ShowActiveEnemiesInHierarchy()
+    {
+        Enemy[] enemies = GetActiveEnemies();
+        foreach (Enemy enemy in enemies)
+        {
+            Debug.Log("Hello");
+            EditorGUIUtility.PingObject(enemy);
+            yield return new WaitForSeconds(1);
+        }
+    }
+#endif
 
     public void SpawnEnemies(int round)
     {

@@ -5,22 +5,52 @@ public class Projectile : MonoBehaviour {
 
     private Transform target;
     private float speed;
+    private bool canMove = true;
     [SerializeField]
     private int damage;
     private ProjectileLauncher parentLauncher;
     private bool initialized = false;
 
+    public float Speed
+    {
+        get
+        {
+            return speed;
+        }
+
+        set
+        {
+            speed = value;
+        }
+    }
+
+    public bool CanMove
+    {
+        get
+        {
+            return canMove;
+        }
+
+        set
+        {
+            canMove = value;
+        }
+    }
+
     private void LateUpdate()
     {
         if (initialized)
-        { 
-            if (target && target.gameObject.activeInHierarchy)
-                    MoveTowardsTarget();
-            else
+        {
+            if (CanMove)
             {
-                target = parentLauncher.ClosestEnemy();
-                if (!target)
-                    Destroy(gameObject);
+                if (target && target.gameObject.activeInHierarchy)
+                    MoveTowardsTarget();
+                else
+                {
+                    target = parentLauncher.ClosestEnemy();
+                    if (!target.gameObject.activeInHierarchy)
+                        Destroy(gameObject);
+                }
             }
         }
     }
@@ -28,13 +58,13 @@ public class Projectile : MonoBehaviour {
     private void MoveTowardsTarget()
     {
         transform.LookAt(target);
-        transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * speed);
+        transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * Speed);
     }
 
     public void SetProjectileVars(Transform target, float speed, int damage, ProjectileLauncher parent)
     {
         this.target = target;
-        this.speed = speed;
+        this.Speed = speed;
         this.damage = damage;
         this.parentLauncher = parent;
         initialized = true;

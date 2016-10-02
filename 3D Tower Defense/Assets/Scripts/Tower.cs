@@ -8,13 +8,14 @@ public class Tower : MonoBehaviour {
     public string title;
     public int damage;
     public float range;
-    public bool placed = false;
+    public bool purchased = false;
+    public TowerManager.TowerType type;
 
     private Animator animator;
 
     private static Enemy[] enemies;
     private Enemy currentEnemy;
-    private static List<Enemy> sortedEnemies;
+    private List<Enemy> sortedEnemies;
 
 	// Use this for initialization
 	void Start ()
@@ -26,7 +27,7 @@ public class Tower : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        SortNearestEnemies();
+         SortNearestEnemies();
 	}
 
     public void TriggerBuildAnimation()
@@ -44,16 +45,46 @@ public class Tower : MonoBehaviour {
         return currentEnemy;
     }
 
+    public void Pause()
+    {
+        if(type.ToString().Contains("single"))
+        {
+            GetComponent<ProjectileLauncher>().Pause();
+        }
+        else if (type.ToString().Contains("areaofeffect"))
+        {
+            GetComponent<AreaOfEffect>().Pause();
+        }
+    }
+
+    public void Unpause()
+    {
+        if (type.ToString().Contains("single"))
+        {
+            GetComponent<ProjectileLauncher>().Unpause();
+        }
+        else if (type.ToString().Contains("areaofeffect"))
+        {
+            GetComponent<AreaOfEffect>().Unpause();
+        }
+    }
+
     public Enemy GetClosestEnemy()
     {
-        return sortedEnemies[0];
+        return sortedEnemies.Count <= 0 ? null : sortedEnemies[0];
     }
 
     private void SortNearestEnemies()
     {
         sortedEnemies = EnemyManager.instance.GetActiveEnemies().ToList();
-        sortedEnemies.OrderBy(x => Vector3.SqrMagnitude(transform.position - x.transform.position));
-        if(sortedEnemies.Count > 0)
+        sortedEnemies = sortedEnemies.OrderBy(x => Vector3.SqrMagnitude(transform.position - x.transform.position)).ToList();
+
+        //for (int i = 0; i < sortedEnemies.Count; i++)
+        //{
+        //    Debug.Log(Vector3.SqrMagnitude(transform.position -+- sortedEnemies[i].transform.position) + " i=" + i);
+        //}
+
+        if (sortedEnemies.Count > 0)
         {
             if(Vector3.SqrMagnitude(transform.position - sortedEnemies[0].transform.position) <= range * range)
             {

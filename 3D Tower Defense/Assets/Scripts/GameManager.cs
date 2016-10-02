@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public int startingCoins = 100;
+    public int coinsMultiplier = 2; 
+
     public int addNewEnemyAfterRounds = 5;
     public float waitTime = 10f;
     public GameObject startRoundButton;
@@ -72,12 +75,6 @@ public class GameManager : MonoBehaviour {
         menuManager = GetComponent<MenuManager>();
         towerManager = TowerManager.instance;
 	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        
-	}
 
     public void PauseRound()
     {
@@ -106,6 +103,7 @@ public class GameManager : MonoBehaviour {
     public void EndRound()
     {
         RoundStarted = false;
+        p.Coins += startingCoins * coinsMultiplier;
         Round++;
     }
 
