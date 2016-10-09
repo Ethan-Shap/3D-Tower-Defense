@@ -61,7 +61,7 @@ public class TowerManager : MonoBehaviour {
     {
         foreach(Tower tower in towers)
         {
-            Debug.Log("Pause");
+            Debug.Log("Pause towers");
             tower.Pause();
         }
     }
@@ -70,11 +70,14 @@ public class TowerManager : MonoBehaviour {
     {
         foreach (Tower tower in towers)
         {
-            if (tower.GetComponentInChildren<ParticleSystem>())
-            {
-                tower.GetComponentInChildren<ParticleSystem>().Pause();
-            }
+            Debug.Log("Unpause towers");
+            tower.Unpause();
         }
+    }
+
+    public List<Tower> GetActiveTowers()
+    {
+        return towers;
     }
 
     public void PlaceTower(GameObject tower)

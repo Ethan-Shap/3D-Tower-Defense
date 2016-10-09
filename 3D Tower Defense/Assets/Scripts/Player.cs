@@ -8,6 +8,8 @@ public class Player : MonoBehaviour {
     private int coins = 100;
     private int health = 100;
     private Display display;
+    private string name;
+    private int levelsUnlocked = 1;
 
     public int Health
     {
@@ -34,6 +36,32 @@ public class Player : MonoBehaviour {
         {
             coins = value;
             display.SetCoinsText(coins.ToString());
+        }
+    }
+
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+
+        set
+        {
+            name = value;
+        }
+    }
+
+    public int LevelsUnlocked
+    {
+        get
+        {
+            return levelsUnlocked;
+        }
+
+        set
+        {
+            levelsUnlocked = value;
         }
     }
 

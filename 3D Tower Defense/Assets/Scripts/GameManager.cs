@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
+
+    public bool showLevel;
 
     public static GameManager instance;
 
@@ -42,10 +45,13 @@ public class GameManager : MonoBehaviour {
     public GameObject startRoundButton;
     public GameObject pauseGameButton;
 
-    private Player p;
+    private Player player;
     private EnemyManager enemyManager;
     private MenuManager menuManager;
     private TowerManager towerManager;
+    private SaveAndLoad saveAndLoad;
+    private SceneManagement sceneManagment;
+
     private bool roundStarted = false;
     public bool RoundStarted
     {
@@ -65,16 +71,44 @@ public class GameManager : MonoBehaviour {
     {
         Debug.Log("Total Rounds " + NumRounds);
         instance = this;
+        
     }
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+   private void Start()
     {
-        p = Player.instance;
+        player = Player.instance;
         enemyManager = EnemyManager.instance;
         menuManager = GetComponent<MenuManager>();
         towerManager = TowerManager.instance;
-	}
+        sceneManagment = FindObjectOfType<SceneManagement>();
+    }
+
+    public void Save()
+    {
+        PlayerData playerData = new PlayerData(Player.instance.name, Player.instance.LevelsUnlocked);
+        LevelData levelData = null;
+        if (sceneManagment.CurrentLevel() <= 0)
+        {
+            Enemy[] enemies = enemyManager.GetActiveEnemies();
+            Tower[] towers = towerManager.GetActiveTowers().ToArray();
+            Dictionary<string, int> towerPositions = new Dictionary<string, int>();
+            Dictionary<string, int> enemyPositions = new Dictionary<string, int>();
+
+            foreach (Enemy enemy in enemies)
+            {
+                enemyPositions.Add(enemy.transform.position.ToString(), (int)enemy.type);
+            }
+
+            foreach (Tower tower in towers)
+            {
+                towerPositions.Add(tower.transform.position.ToString(), (int)tower.type);
+            }
+
+            levelData = new LevelData(sceneManagment.CurrentLevel(), towerPositions, enemyPositions, Round, enemyManager.SpawnRate.ToString(), player.Coins, player.Health);
+        }
+        saveAndLoad.SaveGameData(playerData, levelData);
+    }
 
     public void PauseRound()
     {
@@ -103,8 +137,8 @@ public class GameManager : MonoBehaviour {
     public void EndRound()
     {
         RoundStarted = false;
-        p.Coins += startingCoins * coinsMultiplier;
-        Round++;
+        player.Coins += startingCoins * coinsMultiplier;
+        Round++; 
     }
 
 #if DEBUG
@@ -115,11 +149,11 @@ public class GameManager : MonoBehaviour {
 
         // Add coins to player 
         if (GUI.Button(new Rect(480, 0, 50, 20), "Add Coins", myStyle)) 
-            p.Coins += 1000;
+            player.Coins += 1000;
 
         // Add Health to Base
         if (GUI.Button(new Rect(480, 25, 50, 20), "Add Health", myStyle))
-            p.Health += 100;
+            player.Health += 100;
 
         //Speed Up Enemies
         if (GUI.Button(new Rect(500, 50, 50, 50), "5x Speed", myStyle))
@@ -133,5 +167,38 @@ public class GameManager : MonoBehaviour {
         }
     }
 #endif
+
+}
+
+public static class ExtensionMethods
+{
+    public static Vector3 Clamp(this Vector3 v, float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+    {
+        return new Vector3(Mathf.Clamp(v.x, minX, maxX), Mathf.Clamp(v.y, minY, maxY), Mathf.Clamp(v.z, minZ, maxZ));
+    }
+
+    public static Vector3 ClampMagnitude(this Vector3 v, Vector3 point, float minDist, float maxDist)
+    {
+        float dist = Vector3.Magnitude(v - point);
+        Vector3 dir = v - point;
+        dir = dir.normalized;
+        if (dist <= minDist)
+        {
+            return (dir * minDist) + point;
+        }
+        else if (dist >= maxDist)
+        {
+            return (dir * maxDist) + point;
+        }
+        else
+        {
+            return v;
+        }
+    }
+
+    public static float[] ToIntArray(this Vector3 rVec)
+    {
+        return new float[] { rVec.x, rVec.y, rVec.z };
+    }
 
 }

@@ -36,6 +36,19 @@ Calculate the Maximum number of enemies based on move speed, spawn rate, and dis
 Instantiate the enemies, & Pool based on type
 Move the enemies to spawner when needed to spawn, and move back to pool position if killed or makes it to the end-
 
+# Saving
+Save player data 
+    - Name
+    - Levels Unlocked
+    
+If the player wants to save the current game save -
+    - Level Type
+    - Tower Positions (If there are towers)
+    - Enemy Positions (If there are active enemies)
+    - Round
+    - Spawn Rate
+    - Current Money
+    - Current Health
 
 # Future Updates 
     - More Enemies

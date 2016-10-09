@@ -128,27 +128,3 @@ public class TouchInput : MonoBehaviour {
         prevPos = Input.GetTouch(0).position;
     }
 }
-public static class ExtensionMethods
-{
-    public static Vector3 Clamp(this Vector3 v, float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
-    {
-        return new Vector3(Mathf.Clamp(v.x, minX, maxX), Mathf.Clamp(v.y, minY, maxY), Mathf.Clamp(v.z, minZ, maxZ));
-    }
-
-    public static Vector3 ClampMagnitude(this Vector3 v, Vector3 point, float minDist, float maxDist)
-    {
-        float dist = Vector3.Magnitude(v - point);
-        Vector3 dir = v - point; 
-        dir = dir.normalized;
-        if (dist <= minDist)
-        {
-            return (dir * minDist) + point;
-        } else if (dist >= maxDist)
-        {
-            return (dir * maxDist) + point;
-        } else
-        {
-            return v;
-        }
-    }
-}
