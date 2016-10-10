@@ -10,26 +10,32 @@ public class SaveAndLoad : MonoBehaviour {
     private string jsonString;
     private JsonData gameData;
 
-    public void ReadGameData(out PlayerData playerData, out LevelData levelData)
+    public void LoadGameData(out PlayerData playerData, out LevelData levelData)
     {
         BinaryFormatter bFormatter = new BinaryFormatter();
         string jsonString = null;
-        FileStream fStream = File.Open(Application.dataPath + "Resources/SaveData.json", FileMode.Open);
+        FileStream fStream = File.Open(Application.dataPath + "/Resources/SaveData.json", FileMode.Open);
         jsonString = (string)bFormatter.Deserialize(fStream);
         SaveData saveData = JsonMapper.ToObject<SaveData>(jsonString); 
         fStream.Close();
         playerData = saveData.playerData;
         levelData = saveData.levelData;
+        Debug.Log("Successfully loaded level");
     }
 
     public void SaveGameData(PlayerData playerData, LevelData levelData)
     {
         BinaryFormatter bFormatter = new BinaryFormatter();
-        SaveData data = new SaveData(levelData, playerData);
-        JsonData jsonString = JsonMapper.ToJson(data);
-        FileStream fStream = new FileStream(Application.dataPath + "Resources/SaveData.json", FileMode.OpenOrCreate);
-        bFormatter.Serialize(fStream, jsonString); 
+        SaveData data = new SaveData();
+        data.levelData = levelData;
+        data.playerData = playerData;
+        string jsonString = JsonMapper.ToJson(data);
+        Debug.Log(jsonString);
+        FileStream fStream = new FileStream(Application.dataPath + "/Resources/SaveData.json", FileMode.OpenOrCreate);
+        bFormatter.Serialize(fStream, jsonString);
         fStream.Close();
+        Debug.Log(fStream.ToString());
+        Debug.Log("Successully saved level");
     }
 }
 
@@ -38,12 +44,6 @@ public class SaveData
 {
     public LevelData levelData;
     public PlayerData playerData;
-
-    public SaveData(LevelData levelData, PlayerData playerData)
-    {
-        this.levelData = levelData;
-        this.playerData = playerData;
-    }
 }
  
 public class LevelData

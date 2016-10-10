@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
     private int coins = 100;
     private int health = 100;
     private Display display;
-    private string name;
+    private string playerName = "BANANA";
     private int levelsUnlocked = 1;
 
     public int Health
@@ -43,12 +43,12 @@ public class Player : MonoBehaviour {
     {
         get
         {
-            return name;
+            return playerName;
         }
 
         set
         {
-            name = value;
+            playerName = value;
         }
     }
 
