@@ -4,37 +4,43 @@ using LitJson;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
-using System;
+using Cryptography;
 
 public class SaveAndLoad : MonoBehaviour {
     private string jsonString;
-    private JsonData gameData;
+    private Generic cryptographer = new Generic();
+    private const string _Key = "GottaGetchaHeadInTheGame";
 
-    public void LoadGameData(out PlayerData playerData, out LevelData levelData)
+    public SaveData LoadGameData()
     {
         BinaryFormatter bFormatter = new BinaryFormatter();
-        string jsonString = null;
         FileStream fStream = File.Open(Application.dataPath + "/Resources/SaveData.json", FileMode.Open);
-        jsonString = (string)bFormatter.Deserialize(fStream);
+
+        string encryptedText = (string)bFormatter.Deserialize(fStream);
+        //Decrypt text with key 
+        jsonString = (string)cryptographer.Crypt(Generic.CryptMethod.DECRYPT, Generic.CryptClass.AES, encryptedText, _Key);
+
         SaveData saveData = JsonMapper.ToObject<SaveData>(jsonString); 
         fStream.Close();
-        playerData = saveData.playerData;
-        levelData = saveData.levelData;
         Debug.Log("Successfully loaded level");
+        return saveData;
     }
 
-    public void SaveGameData(PlayerData playerData, LevelData levelData)
+    public void SaveGameData(SaveData saveData)
     {
         BinaryFormatter bFormatter = new BinaryFormatter();
-        SaveData data = new SaveData();
-        data.levelData = levelData;
-        data.playerData = playerData;
-        string jsonString = JsonMapper.ToJson(data);
-        Debug.Log(jsonString);
-        FileStream fStream = new FileStream(Application.dataPath + "/Resources/SaveData.json", FileMode.OpenOrCreate);
-        bFormatter.Serialize(fStream, jsonString);
+        string jsonString = JsonMapper.ToJson(saveData);
+
+        //Debug.Log(jsonString);
+
+        //Encrypt text with key 
+        string encryptedString = (string)cryptographer.Crypt(Generic.CryptMethod.ENCRYPT, Generic.CryptClass.AES, jsonString, _Key);
+
+        FileStream fStream = new FileStream(Application.dataPath + "/Resources/SaveData.json", FileMode.OpenOrCreate); 
+        bFormatter.Serialize(fStream, encryptedString);
+        cryptographer.GetHash(fStream, Generic.HashMethod.MD5);
+
         fStream.Close();
-        Debug.Log(fStream.ToString());
         Debug.Log("Successully saved level");
     }
 }
@@ -56,6 +62,17 @@ public class LevelData
     public int coins;
     public int health;
 
+    public LevelData()
+    {
+        this.level = 0;
+        this.towerPositions = null;
+        this.enemyPositions = null;
+        this.round = 0;
+        this.spawnRate = null;
+        this.coins = 0;
+        this.health = 0;
+    }
+
     public LevelData(int level, Dictionary<string, int> towerPositions, Dictionary<string, int> enemyPositions, int round, string spawnRate, int coins, int health)
     {
         this.level = level;
@@ -70,13 +87,28 @@ public class LevelData
 
 public class PlayerData
 {
-    public string name;
-    public int levelsUnlocked;
+    public string playerName = "BANANA";
+    public int levelsUnlocked = 1;
+    public int numberOfEnemiesKilled = 0;
+    public int numberOfTimesDied = 0;
+    public int towersPlaced = 0;
 
-    public PlayerData(string name, int levelsUnlocked)
+    public PlayerData()
     {
-        this.name = name;
+        this.playerName = null;
+        this.levelsUnlocked = 0;
+        this.numberOfEnemiesKilled = 0;
+        this.numberOfTimesDied = 0;
+        this.towersPlaced = 0;
+    }
+
+    public PlayerData(string playerName, int levelsUnlocked, int numberOfEnemiesKilled, int numberOfTimesDied, int towersPlaced)
+    {
+        this.playerName = playerName;
         this.levelsUnlocked = levelsUnlocked;
+        this.numberOfEnemiesKilled = numberOfEnemiesKilled;
+        this.numberOfTimesDied = numberOfTimesDied;
+        this.towersPlaced = towersPlaced;
     }
 }
 

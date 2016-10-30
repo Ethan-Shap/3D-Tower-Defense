@@ -1,0 +1,10 @@
+lastUpgrade=00935
+proj.pluginVersion=0.9.35
+proj.AppId=486213107131
+and.BundleId=com.EthanShapiro.TowerDefense
+proj.classDir=Assets
+proj.ConstantsClassName=GPGSIds
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--%0d%0aGoogle+Play+game+services+IDs.%0d%0aSave+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.%0d%0a--%3e%0d%0a%3cresources%3e%0d%0a++%3cstring+name%3d%22app_id%22%3e486213107131%3c%2fstring%3e%0d%0a++%3cstring+name%3d%22package_name%22%3ecom.EthanShapiro.TowerDefense%3c%2fstring%3e%0d%0a++%3cstring+name%3d%22achievement_kill_10_enemies%22%3eCgkIu_u8pJMOEAIQAQ%3c%2fstring%3e%0d%0a++%3cstring+name%3d%22achievement_kill_20_enemies%22%3eCgkIu_u8pJMOEAIQAg%3c%2fstring%3e%0d%0a++%3cstring+name%3d%22achievement_place_10_towers%22%3eCgkIu_u8pJMOEAIQAw%3c%2fstring%3e%0d%0a++%3cstring+name%3d%22achievement_place_100_towers%22%3eCgkIu_u8pJMOEAIQBA%3c%2fstring%3e%0d%0a++%3cstring+name%3d%22achievement_test_achievement%22%3eCgkIu_u8pJMOEAIQBQ%3c%2fstring%3e%0d%0a++%3cstring+name%3d%22leaderboard_most_enemies_killed%22%3eCgkIu_u8pJMOEAIQBg%3c%2fstring%3e%0d%0a%3c%2fresources%3e%0d%0a
+and.ClientId=
+proj.requireGPlus=false
+android.SetupDone=true

@@ -102,6 +102,11 @@ public class EnemyManager : MonoBehaviour {
     }
 #endif
 
+    public void LoadLevel()
+    {
+
+    }
+
     public void SpawnEnemies(int round)
     {
         int numEnemies = (int)(round * enemyMultiplier);

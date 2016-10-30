@@ -17,8 +17,8 @@ public class Tower : MonoBehaviour {
     private Enemy currentEnemy;
     private List<Enemy> sortedEnemies;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
         animator = GetComponent<Animator>();
         sortedEnemies = new List<Enemy>();
@@ -100,32 +100,5 @@ public class Tower : MonoBehaviour {
         //    Debug.Log("i = " + i + " dist = " + Vector3.SqrMagnitude(transform.position - sortedEnemies[i].transform.position) + " name " + sortedEnemies[i].name);
         //}
     }
-    //private void TargetNearestEnemy()
-    //{
-    //    enemies = EnemyManager.instance.GetActiveEnemies();
-    //    float closestDistance = Mathf.Infinity;
-    //    Enemy closestEnemy = null;
-    //    foreach(Enemy enemy in enemies)
-    //    {
-    //        float distance = Vector3.SqrMagnitude(transform.position - enemy.transform.position);
-    //        if (distance < closestDistance * closestDistance)
-    //        {
-    //            closestDistance = distance;
-    //            closestEnemy = enemy;
-    //        }
-    //    }
-
-    //    //Debug.Log(closestDistance);
-    //    //Debug.Log(range * range);
-
-    //    if (closestDistance * closestDistance <= range * range)
-    //    {
-    //        Debug.Log("CLOSE");
-    //        currentEnemy = closestEnemy;
-    //    } else
-    //    {
-    //        nextClosestEnemy = currentEnemy;
-    //        currentEnemy = null;
-    //    }
 }
 

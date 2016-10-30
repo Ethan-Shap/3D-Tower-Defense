@@ -88,4 +88,9 @@ public class TowerManager : MonoBehaviour {
         previewer.ExitPreview(tower);
     }
 
+    public void LoadLevel()
+    {
+
+    }
+
 }

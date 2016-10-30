@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Player : MonoBehaviour {
 
@@ -7,9 +8,10 @@ public class Player : MonoBehaviour {
 
     private int coins = 100;
     private int health = 100;
-    private Display display;
+    private LevelDisplay display;
     private string playerName = "BANANA";
     private int levelsUnlocked = 1;
+    public PlayerData data = new PlayerData();
 
     public int Health
     {
@@ -24,7 +26,6 @@ public class Player : MonoBehaviour {
             health = value;
         }
     }
-
     public int Coins
     {
         get
@@ -38,7 +39,6 @@ public class Player : MonoBehaviour {
             display.SetCoinsText(coins.ToString());
         }
     }
-
     public string Name
     {
         get
@@ -51,7 +51,6 @@ public class Player : MonoBehaviour {
             playerName = value;
         }
     }
-
     public int LevelsUnlocked
     {
         get
@@ -70,10 +69,9 @@ public class Player : MonoBehaviour {
         instance = this;
     }
 
-    // Use this for initialization
     void Start ()
     {
-        display = Display.instance;
+        display = LevelDisplay.instance;
 	}
-
 }
+

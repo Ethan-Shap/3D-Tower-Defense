@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour {
     private float speed;
     private float defaultSpeed;
     private int currentWaypoint = 0;
+    private int damage = 1;
 
     public float Speed
     {
@@ -68,14 +69,9 @@ public class Enemy : MonoBehaviour {
             {
                 currentWaypoint = 0;
                 currentPath = null;
-                Player.instance.Health -= Constants.damage;
+                Player.instance.Health -= damage;
                 EnemyManager.instance.ResetPosition(this);
             }
         }
     }
-}
-
-public static class Constants
-{
-    public static int damage = 1;
 }

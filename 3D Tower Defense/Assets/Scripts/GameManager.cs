@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour {
     private TowerManager towerManager;
     private SaveAndLoad saveAndLoad;
     private SceneManagement sceneManagment;
+    private SaveData saveData;
 
     private bool roundStarted = false;
     public bool RoundStarted
@@ -72,6 +73,7 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Total Rounds " + NumRounds);
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+        saveData = new SaveData();
     }
 
     // Use this for initialization
@@ -87,7 +89,7 @@ public class GameManager : MonoBehaviour {
 
     public void Save()
     {
-        PlayerData playerData = new PlayerData(player.Name, player.LevelsUnlocked);
+        PlayerData playerData = player.data;
         LevelData levelData = null;
         if (sceneManagment.CurrentLevel() > 0)
         {
@@ -108,19 +110,21 @@ public class GameManager : MonoBehaviour {
 
             levelData = new LevelData(sceneManagment.CurrentLevel(), towerPositions, enemyPositions, Round, enemyManager.SpawnRate.ToString(), player.Coins, player.Health);
         }
-        saveAndLoad.SaveGameData(playerData, levelData);
+        saveData.playerData = playerData;
+        saveData.levelData = levelData;
+
+        saveAndLoad.SaveGameData(saveData);
     }
 
-    public void LoadSave()
+    public void LoadSaveData()
     {
-        PlayerData playerData = new PlayerData(null, 0);
-        LevelData levelData = new LevelData(0, null, null, 0, null, 0, 0);
-        saveAndLoad.LoadGameData(out playerData, out levelData);
-        Debug.Log(levelData.health);
+        saveData = saveAndLoad.LoadGameData();
+        player.data = saveData.playerData;
     }
 
     public void PauseRound()
     {
+        GPGManager.instance.UpdateAllAchievements();
         enemyManager.Pause();
         menuManager.OpenScreen(0);
         towerManager.PauseTowers();

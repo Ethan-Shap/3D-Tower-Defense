@@ -21,7 +21,7 @@ public class ProjectileLauncher : MonoBehaviour {
 	private void Awake()
 	{
         nextShootTime = fireRate;
-
+        
         if (!projectilePrefab)
             throw new System.NullReferenceException("No projectile for " + name + " to shoot");
 
@@ -100,5 +100,4 @@ public class ProjectileLauncher : MonoBehaviour {
         else
             return null;
     }
-
 }
